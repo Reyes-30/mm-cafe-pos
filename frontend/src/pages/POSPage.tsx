@@ -231,9 +231,9 @@ export default function POSPage() {
 
   // ==================== RENDER PRODUCTS SECTION ====================
   const renderProducts = () => (
-    <div className="flex-1 flex flex-col min-h-0 w-full min-w-0 overflow-hidden">
+    <div className="md:flex-1 flex flex-col md:min-h-0 w-full md:min-w-0 md:overflow-hidden">
       {/* Search */}
-      <div className="flex-shrink-0 mb-2 sm:mb-3">
+      <div className="md:flex-shrink-0 mb-2 sm:mb-3">
         <div className="relative">
           <Search
             size={18}
@@ -279,7 +279,7 @@ export default function POSPage() {
       </div>
       {/* Product Grid - scrollable area */}
       <div
-        className="flex-1 overflow-y-auto overflow-x-hidden w-full min-w-0"
+        className="md:flex-1 md:overflow-y-auto md:overflow-x-hidden w-full md:min-w-0"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <div className="grid grid-cols-2 gap-2 p-2 w-full">
@@ -643,24 +643,26 @@ export default function POSPage() {
   );
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 h-full w-full max-w-full overflow-hidden">
-      {/* ============ DESKTOP / TABLET LAYOUT ============ */}
-      <div className="hidden md:flex flex-col md:flex-row gap-3 sm:gap-4 flex-1 min-h-0">
-        {/* Products - 60% on tablet, flex-1 on desktop */}
-        <div className="flex-1 md:w-[60%] lg:w-auto flex flex-col min-h-0 min-w-0">
-          {renderProducts()}
-        </div>
+    <>
+      {/* ============ DESKTOP / TABLET LAYOUT (md+) ============ */}
+      <div className="hidden md:flex flex-col flex-1 min-h-0 h-full overflow-hidden">
+        <div className="flex flex-row gap-4 flex-1 min-h-0">
+          {/* Products - 60% on tablet, flex-1 on desktop */}
+          <div className="flex-1 flex flex-col min-h-0 min-w-0">
+            {renderProducts()}
+          </div>
 
-        {/* Sidebar - 40% on tablet */}
-        <div className="md:w-[40%] lg:w-[370px] xl:w-96">
-          {renderSidebar(false)}
+          {/* Sidebar - 40% on tablet */}
+          <div className="w-[40%] lg:w-[370px] xl:w-96">
+            {renderSidebar(false)}
+          </div>
         </div>
       </div>
 
-      {/* ============ MOBILE LAYOUT (< md) ============ */}
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 overflow-hidden relative">
+      {/* ============ MOBILE LAYOUT (< md) — simple como las demás páginas ============ */}
+      <div className="md:hidden">
         {/* Mobile Top Tabs - Menú / Carrito */}
-        <div className="grid grid-cols-2 flex-shrink-0 mb-2 mx-3 rounded-xl overflow-hidden border-2 border-cafe-300 dark:border-gray-600">
+        <div className="grid grid-cols-2 mb-2 rounded-xl overflow-hidden border-2 border-cafe-300 dark:border-gray-600">
           <button
             onClick={() => setMobileView('menu')}
             className={`py-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer select-none ${
@@ -690,22 +692,14 @@ export default function POSPage() {
           </button>
         </div>
 
-        {/* Mobile view content */}
-        {mobileView === 'menu' && (
-          <div className="flex-1 flex flex-col min-h-0 w-full min-w-0 overflow-hidden">
-            {renderProducts()}
-          </div>
-        )}
+        {/* Mobile view content — sin flex-1/overflow-hidden anidado */}
+        {mobileView === 'menu' && renderProducts()}
 
-        {mobileView === 'cart' && (
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            {renderSidebar(true)}
-          </div>
-        )}
+        {mobileView === 'cart' && renderSidebar(true)}
 
         {/* Botón flotante para ver carrito en móvil cuando hay productos */}
         {mobileView === 'menu' && getItemCount() > 0 && (
-          <div className="md:hidden fixed left-4 right-4 bottom-16 z-40 pointer-events-none">
+          <div className="fixed left-4 right-4 bottom-16 z-40 pointer-events-none">
             <button
               onClick={() => setMobileView('cart')}
               className="w-full bg-cafe-700 text-white py-2.5 rounded-full font-semibold shadow-lg flex items-center justify-center gap-2 pointer-events-auto"
@@ -988,6 +982,6 @@ export default function POSPage() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
