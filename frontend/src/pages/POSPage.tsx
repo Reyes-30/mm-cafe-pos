@@ -158,9 +158,8 @@ export default function POSPage() {
       setShowSentConfirm(true);
       toast.success('¡Pedido enviado a cocina!');
 
-      if (sidebarTab === 'pending') {
-        loadPendingOrders();
-      }
+      // Siempre actualizar pendientes para que el badge se muestre inmediatamente
+      loadPendingOrders();
     } catch (error: any) {
       toast.error(error.response?.data?.error || 'Error al crear el pedido');
     } finally {
@@ -507,7 +506,7 @@ export default function POSPage() {
 
           {/* Cart Footer */}
           {cartItems.length > 0 && (
-            <div className="p-3 sm:p-4 border-t border-cream-200 dark:border-gray-700 space-y-2 sm:space-y-3 flex-shrink-0">
+            <div className={`p-3 sm:p-4 border-t border-cream-200 dark:border-gray-700 space-y-2 sm:space-y-3 flex-shrink-0 ${isMobile ? 'pb-20' : ''}`}>
               {/* Order note */}
               <input
                 type="text"
@@ -663,9 +662,9 @@ export default function POSPage() {
       </div>
 
       {/* ============ MOBILE LAYOUT (< md) — simple como las demás páginas ============ */}
-      <div className="md:hidden" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+      <div className="md:hidden flex flex-col flex-1 min-h-0 relative" style={{ width: '100vw', maxWidth: '100vw', overflowX: 'hidden', boxSizing: 'border-box' }}>
         {/* Mobile Top Tabs - Menú / Carrito */}
-        <div className="grid grid-cols-2 mb-2 rounded-xl overflow-hidden border-2 border-cafe-300 dark:border-gray-600">
+        <div className="grid grid-cols-2 mb-2 rounded-xl overflow-hidden border-2 border-cafe-300 dark:border-gray-600" style={{ width: '100%', boxSizing: 'border-box', margin: '0 8px 8px 8px', maxWidth: 'calc(100% - 16px)' }}>
           <button
             onClick={() => setMobileView('menu')}
             className={`py-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer select-none ${
@@ -703,8 +702,9 @@ export default function POSPage() {
               overflowX: 'hidden',
               WebkitOverflowScrolling: 'touch',
               width: '100%',
-              maxWidth: '100vw',
               boxSizing: 'border-box',
+              paddingLeft: 'env(safe-area-inset-left, 0px)',
+              paddingRight: 'env(safe-area-inset-right, 0px)',
             }}
           >
             {/* Buscador */}
@@ -803,6 +803,7 @@ export default function POSPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     width: '100%',
+                    maxWidth: '100%',
                     boxSizing: 'border-box',
                     cursor: 'pointer',
                   }}

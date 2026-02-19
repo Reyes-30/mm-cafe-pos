@@ -106,7 +106,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6 pb-20 md:pb-6">
       {/* Header */}
       <div>
         <h1 className="text-xl sm:text-2xl font-display font-bold text-cafe-700 dark:text-white">
