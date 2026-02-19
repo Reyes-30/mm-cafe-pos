@@ -231,7 +231,7 @@ export default function POSPage() {
 
   // ==================== RENDER PRODUCTS SECTION ====================
   const renderProducts = () => (
-    <div className="md:flex-1 flex flex-col md:min-h-0 w-full md:min-w-0 md:overflow-hidden">
+    <div className="md:flex-1 flex flex-col md:min-h-0 w-full md:min-w-0 md:overflow-hidden" style={{ maxWidth: '100%', overflow: 'hidden' }}>
       {/* Search */}
       <div className="md:flex-shrink-0 mb-2 sm:mb-3">
         <div className="relative">
@@ -280,9 +280,11 @@ export default function POSPage() {
       {/* Product Grid - scrollable area */}
       <div
         className="md:flex-1 md:overflow-y-auto md:overflow-x-hidden w-full md:min-w-0"
-        style={{ WebkitOverflowScrolling: 'touch' }}
+        style={{ WebkitOverflowScrolling: 'touch', maxWidth: '100%', overflow: 'hidden auto' }}
       >
-        <div className="grid grid-cols-2 gap-2 p-2 w-full">
+        <div
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.5rem', padding: '0.5rem', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}
+        >
           {filteredProducts.map((product) => {
             const handleAddProduct = () => {
               addItem(product);
@@ -295,7 +297,8 @@ export default function POSPage() {
             <div
               key={product.id}
               onClick={handleAddProduct}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-cream-200 dark:border-gray-700 overflow-hidden flex flex-col cursor-pointer active:scale-[0.97] transition-transform w-full"
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-cream-200 dark:border-gray-700 overflow-hidden flex flex-col cursor-pointer active:scale-[0.97] transition-transform"
+              style={{ minWidth: 0, maxWidth: '100%' }}
             >
               {/* IMAGEN - altura fija pequeña */}
               <div
@@ -660,7 +663,7 @@ export default function POSPage() {
       </div>
 
       {/* ============ MOBILE LAYOUT (< md) — simple como las demás páginas ============ */}
-      <div className="md:hidden">
+      <div className="md:hidden" style={{ maxWidth: '100%', overflow: 'hidden' }}>
         {/* Mobile Top Tabs - Menú / Carrito */}
         <div className="grid grid-cols-2 mb-2 rounded-xl overflow-hidden border-2 border-cafe-300 dark:border-gray-600">
           <button
@@ -692,8 +695,184 @@ export default function POSPage() {
           </button>
         </div>
 
-        {/* Mobile view content — sin flex-1/overflow-hidden anidado */}
-        {mobileView === 'menu' && renderProducts()}
+        {mobileView === 'menu' && (
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              WebkitOverflowScrolling: 'touch',
+              width: '100%',
+              maxWidth: '100vw',
+              boxSizing: 'border-box',
+            }}
+          >
+            {/* Buscador */}
+            <div style={{ padding: '8px 8px 4px 8px' }}>
+              <div style={{ position: 'relative' }}>
+                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#a0856b' }} />
+                <input
+                  type="text"
+                  placeholder="Buscar producto..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="input-field"
+                  style={{ paddingLeft: '34px', fontSize: '14px', height: '40px' }}
+                />
+              </div>
+            </div>
+
+            {/* Carrusel categorías */}
+            <div
+              className="categories-scroll"
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'nowrap',
+                overflowX: 'scroll',
+                WebkitOverflowScrolling: 'touch',
+                touchAction: 'pan-x',
+                gap: '6px',
+                padding: '6px 8px',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                boxSizing: 'border-box',
+              }}
+            >
+              <button
+                onClick={() => setSelectedCategory(null)}
+                style={{
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap',
+                  padding: '5px 14px',
+                  borderRadius: '999px',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  border: !selectedCategory ? 'none' : '1px solid #d6b896',
+                  backgroundColor: !selectedCategory ? '#6B3A2A' : 'white',
+                  color: !selectedCategory ? 'white' : '#6B3A2A',
+                  cursor: 'pointer',
+                  touchAction: 'manipulation',
+                }}
+              >
+                Todos
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  style={{
+                    flexShrink: 0,
+                    whiteSpace: 'nowrap',
+                    padding: '5px 14px',
+                    borderRadius: '999px',
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    border: selectedCategory === cat.id ? 'none' : '1px solid #d6b896',
+                    backgroundColor: selectedCategory === cat.id ? '#6B3A2A' : 'white',
+                    color: selectedCategory === cat.id ? 'white' : '#6B3A2A',
+                    cursor: 'pointer',
+                    touchAction: 'manipulation',
+                  }}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+
+            {/* Grid de productos */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '8px',
+                padding: '4px 8px 80px 8px',
+                width: '100%',
+                boxSizing: 'border-box',
+              }}
+            >
+              {filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  onClick={() => { addItem(product); toast.success(`${product.name} agregado`, { duration: 800 }); }}
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {/* Imagen */}
+                  <div style={{ width: '100%', height: '90px', backgroundColor: '#f5ede6', overflow: 'hidden', flexShrink: 0 }}>
+                    {product.imageUrl ? (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px' }}>
+                        {product.category?.name === 'Hamburguesas' ? '🍔' :
+                         product.category?.name === 'Alitas' ? '🍗' :
+                         product.category?.name === 'Tacos' ? '🌮' :
+                         product.category?.name === 'Pupusas' ? '🫓' :
+                         product.category?.name === 'Antojitos' ? '🍟' : '🍽️'}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Texto */}
+                  <div style={{ padding: '6px 8px 8px 8px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <p style={{
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      color: '#3d1f0f',
+                      marginBottom: '2px',
+                      lineHeight: '1.3',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical' as any,
+                      overflow: 'hidden',
+                    }}>
+                      {product.name}
+                    </p>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#b8860b', marginBottom: '6px' }}>
+                      {formatLempiras(product.price)}
+                    </p>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); addItem(product); toast.success(`${product.name} agregado`, { duration: 800 }); }}
+                      style={{
+                        width: '100%',
+                        backgroundColor: '#6B3A2A',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '5px 0',
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        marginTop: 'auto',
+                      }}
+                    >
+                      + Agregar
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {filteredProducts.length === 0 && (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0', color: '#a0856b' }}>
+                  <p>No se encontraron productos</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {mobileView === 'cart' && renderSidebar(true)}
 
