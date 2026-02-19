@@ -228,7 +228,7 @@ export default function MenuPage() {
 
         {/* Products Table - Desktop */}
         <div className="hidden sm:block card overflow-hidden">
-          <div className="overflow-x-auto overscroll-contain">
+          <div className="overflow-x-auto">
             <table className="w-full table-zebra">
               <thead>
                 <tr className="bg-cream-200 dark:bg-gray-700">

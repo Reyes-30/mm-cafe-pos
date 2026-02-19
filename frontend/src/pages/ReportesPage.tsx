@@ -291,7 +291,7 @@ export default function ReportesPage() {
                 <TrendingUp size={18} />
                 Productos Más Vendidos
               </h3>
-              <div className="overflow-x-auto overscroll-contain">
+              <div className="overflow-x-auto">
                 <table className="w-full table-zebra hidden sm:table">
                   <thead>
                     <tr className="bg-cream-200 dark:bg-gray-700">
@@ -342,7 +342,7 @@ export default function ReportesPage() {
                 <FileText size={18} />
                 Detalle de Órdenes ({reportData.orders.length})
               </h3>
-              <div className="overflow-x-auto overscroll-contain">
+              <div className="overflow-x-auto">
                 <table className="w-full table-zebra hidden sm:table">
                   <thead>
                     <tr className="bg-cream-200 dark:bg-gray-700">

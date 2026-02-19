@@ -213,7 +213,7 @@ export default function HistorialPage() {
         ) : (
           <>
             {/* Desktop Table */}
-            <div className="hidden sm:block overflow-x-auto overscroll-contain">
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full table-zebra">
                 <thead>
                   <tr className="bg-cream-200 dark:bg-gray-700">
