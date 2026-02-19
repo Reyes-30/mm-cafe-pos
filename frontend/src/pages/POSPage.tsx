@@ -231,7 +231,7 @@ export default function POSPage() {
 
   // ==================== RENDER PRODUCTS SECTION ====================
   const renderProducts = () => (
-    <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+    <div className="flex-1 flex flex-col min-h-0 w-full min-w-0 overflow-hidden">
       {/* Search */}
       <div className="flex-shrink-0 mb-2 sm:mb-3">
         <div className="relative">
@@ -248,20 +248,10 @@ export default function POSPage() {
           />
         </div>
       </div>
-      {/* Categories - horizontal scrollable (carrusel en móvil) */}
+      {/* Categories - horizontal scrollable */}
       <div
-        className="categories-scroll mb-2 sm:mb-3 w-full"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'nowrap',
-          overflowX: window.innerWidth < 768 ? 'auto' : 'visible',
-          gap: '8px',
-          padding: '8px',
-          WebkitOverflowScrolling: 'touch',
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        }}
+        className="categories-scroll flex flex-nowrap gap-2 px-2 py-1 mb-2 sm:mb-3 w-full overflow-x-auto"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <button
           onClick={() => setSelectedCategory(null)}
@@ -270,7 +260,6 @@ export default function POSPage() {
               ? 'bg-cafe-700 text-white shadow-md'
               : 'bg-white dark:bg-gray-800 text-cafe-600 border border-cream-200 dark:border-gray-700'
           }`}
-          style={{ flexShrink: window.innerWidth < 768 ? 0 : 'unset', whiteSpace: 'nowrap' }}
         >
           Todos
         </button>
@@ -283,7 +272,6 @@ export default function POSPage() {
                 ? 'bg-cafe-700 text-white shadow-md'
                 : 'bg-white dark:bg-gray-800 text-cafe-600 border border-cream-200 dark:border-gray-700'
             }`}
-            style={{ flexShrink: window.innerWidth < 768 ? 0 : 'unset', whiteSpace: 'nowrap' }}
           >
             {cat.name}
           </button>
@@ -291,13 +279,10 @@ export default function POSPage() {
       </div>
       {/* Product Grid - scrollable area */}
       <div
-        className="flex-1 overflow-y-auto overflow-x-hidden p-0"
-        style={{ WebkitOverflowScrolling: 'touch', width: '100%', maxWidth: '100vw' }}
+        className="flex-1 overflow-y-auto overflow-x-hidden w-full min-w-0"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
-        <div
-          className="grid grid-cols-2 gap-2 p-2"
-          style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}
-        >
+        <div className="grid grid-cols-2 gap-2 p-2 w-full">
           {filteredProducts.map((product) => {
             const handleAddProduct = () => {
               addItem(product);
@@ -310,8 +295,7 @@ export default function POSPage() {
             <div
               key={product.id}
               onClick={handleAddProduct}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-cream-200 dark:border-gray-700 overflow-hidden flex flex-col cursor-pointer active:scale-[0.97] transition-transform"
-              style={{ width: '100%', maxWidth: '100%' }}
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-cream-200 dark:border-gray-700 overflow-hidden flex flex-col cursor-pointer active:scale-[0.97] transition-transform w-full"
             >
               {/* IMAGEN - altura fija pequeña */}
               <div
@@ -659,7 +643,7 @@ export default function POSPage() {
   );
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 h-full">
+    <div className="flex flex-col flex-1 min-h-0 h-full w-full max-w-full overflow-hidden">
       {/* ============ DESKTOP / TABLET LAYOUT ============ */}
       <div className="hidden md:flex flex-col md:flex-row gap-3 sm:gap-4 flex-1 min-h-0">
         {/* Products - 60% on tablet, flex-1 on desktop */}
@@ -674,15 +658,15 @@ export default function POSPage() {
       </div>
 
       {/* ============ MOBILE LAYOUT (< md) ============ */}
-      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full overflow-hidden relative">
+      <div className="md:hidden flex flex-col flex-1 min-h-0 w-full min-w-0 overflow-hidden relative">
         {/* Mobile Top Tabs - Menú / Carrito */}
-        <div className="flex-shrink-0 flex mb-2">
+        <div className="grid grid-cols-2 flex-shrink-0 mb-2 mx-3 rounded-xl overflow-hidden border-2 border-cafe-300 dark:border-gray-600">
           <button
             onClick={() => setMobileView('menu')}
-            className={`flex-1 py-2.5 text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer select-none rounded-l-xl border border-cream-200 dark:border-gray-700 ${
+            className={`py-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer select-none ${
               mobileView === 'menu'
                 ? 'bg-cafe-700 text-white'
-                : 'bg-white text-cafe-500'
+                : 'bg-cream-50 dark:bg-gray-800 text-cafe-600'
             }`}
           >
             <UtensilsCrossed size={16} />
@@ -690,10 +674,10 @@ export default function POSPage() {
           </button>
           <button
             onClick={() => setMobileView('cart')}
-            className={`flex-1 py-2.5 text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer select-none relative rounded-r-xl border border-l-0 border-cream-200 dark:border-gray-700 ${
+            className={`py-2 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer select-none ${
               mobileView === 'cart'
                 ? 'bg-cafe-700 text-white'
-                : 'bg-white text-cafe-500'
+                : 'bg-cream-50 dark:bg-gray-800 text-cafe-600'
             }`}
           >
             <ShoppingCart size={16} />
@@ -708,7 +692,7 @@ export default function POSPage() {
 
         {/* Mobile view content */}
         {mobileView === 'menu' && (
-          <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+          <div className="flex-1 flex flex-col min-h-0 w-full min-w-0 overflow-hidden">
             {renderProducts()}
           </div>
         )}

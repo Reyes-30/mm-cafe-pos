@@ -342,7 +342,7 @@ export default function Layout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 min-h-0 p-3 sm:p-4 md:p-6 pb-20 md:pb-6 safe-bottom overflow-auto">
+        <main className="flex-1 min-h-0 p-3 sm:p-4 md:p-6 pb-20 md:pb-6 safe-bottom overflow-y-auto overflow-x-hidden">
           <Outlet />
         </main>
       </div>
