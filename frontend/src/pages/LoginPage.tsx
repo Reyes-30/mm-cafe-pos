@@ -33,7 +33,7 @@ export default function LoginPage() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="w-full max-w-md"
       >
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-8 border border-cream-200">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-8 border border-cream-200 dark:border-gray-700">
           {/* Logo */}
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}

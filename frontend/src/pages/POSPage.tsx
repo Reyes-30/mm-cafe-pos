@@ -19,6 +19,7 @@ import {
 import api from '../lib/api';
 import { formatLempiras } from '../lib/utils';
 import { useCartStore } from '../stores/cartStore';
+import { useThemeStore } from '../stores/themeStore';
 import type { Product, Category } from '../types';
 import toast from 'react-hot-toast';
 
@@ -40,6 +41,7 @@ interface PendingOrder {
 }
 
 export default function POSPage() {
+  const { isDark } = useThemeStore();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -710,7 +712,7 @@ export default function POSPage() {
             {/* Buscador */}
             <div style={{ padding: '8px 8px 4px 8px' }}>
               <div style={{ position: 'relative' }}>
-                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#a0856b' }} />
+                <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: isDark ? '#9ca3af' : '#a0856b' }} />
                 <input
                   type="text"
                   placeholder="Buscar producto..."
@@ -748,9 +750,9 @@ export default function POSPage() {
                   borderRadius: '999px',
                   fontSize: '12px',
                   fontWeight: 500,
-                  border: !selectedCategory ? 'none' : '1px solid #d6b896',
-                  backgroundColor: !selectedCategory ? '#6B3A2A' : 'white',
-                  color: !selectedCategory ? 'white' : '#6B3A2A',
+                  border: !selectedCategory ? 'none' : `1px solid ${isDark ? '#4b5563' : '#d6b896'}`,
+                  backgroundColor: !selectedCategory ? '#6B3A2A' : (isDark ? '#374151' : 'white'),
+                  color: !selectedCategory ? 'white' : (isDark ? '#e5e7eb' : '#6B3A2A'),
                   cursor: 'pointer',
                   touchAction: 'manipulation',
                 }}
@@ -768,9 +770,9 @@ export default function POSPage() {
                     borderRadius: '999px',
                     fontSize: '12px',
                     fontWeight: 500,
-                    border: selectedCategory === cat.id ? 'none' : '1px solid #d6b896',
-                    backgroundColor: selectedCategory === cat.id ? '#6B3A2A' : 'white',
-                    color: selectedCategory === cat.id ? 'white' : '#6B3A2A',
+                    border: selectedCategory === cat.id ? 'none' : `1px solid ${isDark ? '#4b5563' : '#d6b896'}`,
+                    backgroundColor: selectedCategory === cat.id ? '#6B3A2A' : (isDark ? '#374151' : 'white'),
+                    color: selectedCategory === cat.id ? 'white' : (isDark ? '#e5e7eb' : '#6B3A2A'),
                     cursor: 'pointer',
                     touchAction: 'manipulation',
                   }}
@@ -796,10 +798,10 @@ export default function POSPage() {
                   key={product.id}
                   onClick={() => { addItem(product); toast.success(`${product.name} agregado`, { duration: 800 }); }}
                   style={{
-                    backgroundColor: 'white',
+                    backgroundColor: isDark ? '#1f2937' : 'white',
                     borderRadius: '12px',
                     overflow: 'hidden',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                    boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.3)' : '0 1px 4px rgba(0,0,0,0.08)',
                     display: 'flex',
                     flexDirection: 'column',
                     width: '100%',
@@ -809,7 +811,7 @@ export default function POSPage() {
                   }}
                 >
                   {/* Imagen */}
-                  <div style={{ width: '100%', height: '90px', backgroundColor: '#f5ede6', overflow: 'hidden', flexShrink: 0 }}>
+                  <div style={{ width: '100%', height: '90px', backgroundColor: isDark ? '#374151' : '#f5ede6', overflow: 'hidden', flexShrink: 0 }}>
                     {product.imageUrl ? (
                       <img
                         src={product.imageUrl}
@@ -832,7 +834,7 @@ export default function POSPage() {
                     <p style={{
                       fontSize: '11px',
                       fontWeight: 600,
-                      color: '#3d1f0f',
+                      color: isDark ? '#e5e7eb' : '#3d1f0f',
                       marginBottom: '2px',
                       lineHeight: '1.3',
                       display: '-webkit-box',
@@ -842,7 +844,7 @@ export default function POSPage() {
                     }}>
                       {product.name}
                     </p>
-                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#b8860b', marginBottom: '6px' }}>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: isDark ? '#e8bc66' : '#b8860b', marginBottom: '6px' }}>
                       {formatLempiras(product.price)}
                     </p>
                     <button
@@ -867,7 +869,7 @@ export default function POSPage() {
               ))}
 
               {filteredProducts.length === 0 && (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0', color: '#a0856b' }}>
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0', color: isDark ? '#9ca3af' : '#a0856b' }}>
                   <p>No se encontraron productos</p>
                 </div>
               )}

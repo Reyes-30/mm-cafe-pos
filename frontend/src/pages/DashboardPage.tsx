@@ -23,9 +23,11 @@ import {
 } from 'recharts';
 import api from '../lib/api';
 import { formatLempiras, formatDateTime } from '../lib/utils';
+import { useThemeStore } from '../stores/themeStore';
 import type { DashboardStats, SalesChartData, CategorySalesData, Order } from '../types';
 
-const COLORS = ['#6B3A2A', '#C8973A', '#a5513a', '#87491a', '#d4896a', '#5a3125', '#e8bc66', '#4a2920'];
+const COLORS_LIGHT = ['#6B3A2A', '#C8973A', '#a5513a', '#87491a', '#d4896a', '#5a3125', '#e8bc66', '#4a2920'];
+const COLORS_DARK = ['#d4896a', '#e8bc66', '#C8973A', '#a5513a', '#E0CDB0', '#87491a', '#f0d48a', '#c97a5a'];
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -37,6 +39,8 @@ const cardVariants = {
 };
 
 export default function DashboardPage() {
+  const { isDark } = useThemeStore();
+  const COLORS = isDark ? COLORS_DARK : COLORS_LIGHT;
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [salesChart, setSalesChart] = useState<SalesChartData[]>([]);
   const [categorySales, setCategorySales] = useState<CategorySalesData[]>([]);
@@ -162,18 +166,19 @@ export default function DashboardPage() {
           </h3>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={salesChart}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E0CDB0" />
-              <XAxis dataKey="date" stroke="#6B3A2A" fontSize={10} tick={{ fontSize: 10 }} />
-              <YAxis stroke="#6B3A2A" fontSize={10} tick={{ fontSize: 10 }} width={45} />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#E0CDB0'} />
+              <XAxis dataKey="date" stroke={isDark ? '#9ca3af' : '#6B3A2A'} fontSize={10} tick={{ fontSize: 10 }} />
+              <YAxis stroke={isDark ? '#9ca3af' : '#6B3A2A'} fontSize={10} tick={{ fontSize: 10 }} width={45} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#FAF5EE',
-                  border: '1px solid #E0CDB0',
+                  backgroundColor: isDark ? '#1f2937' : '#FAF5EE',
+                  border: isDark ? '1px solid #374151' : '1px solid #E0CDB0',
                   borderRadius: '12px',
+                  color: isDark ? '#e5e7eb' : undefined,
                 }}
                 formatter={(value: number) => [formatLempiras(value), 'Ventas']}
               />
-              <Bar dataKey="total" fill="#6B3A2A" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="total" fill={isDark ? '#d4896a' : '#6B3A2A'} radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
@@ -204,7 +209,15 @@ export default function DashboardPage() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => formatLempiras(value)} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDark ? '#1f2937' : '#FAF5EE',
+                    border: isDark ? '1px solid #374151' : '1px solid #E0CDB0',
+                    borderRadius: '12px',
+                    color: isDark ? '#e5e7eb' : undefined,
+                  }}
+                  formatter={(value: number) => formatLempiras(value)}
+                />
                 <Legend
                   wrapperStyle={{ fontSize: '11px' }}
                   formatter={(value: string) => (

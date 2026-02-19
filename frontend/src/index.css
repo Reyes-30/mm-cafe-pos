@@ -46,6 +46,18 @@
     @apply bg-cafe-700;
   }
 
+  .dark ::-webkit-scrollbar-track {
+    background-color: #1f2937;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+  }
+
   /* Hide scrollbar on mobile for cleaner look */
   @media (max-width: 768px) {
     ::-webkit-scrollbar {
@@ -88,14 +100,14 @@
   }
 
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-cream-200
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-cream-200 dark:border-gray-700
            hover:shadow-md transition-shadow duration-200;
   }
 
   .input-field {
-    @apply w-full px-4 py-3 rounded-xl border border-cream-300
+    @apply w-full px-4 py-3 rounded-xl border border-cream-300 dark:border-gray-600
            focus:outline-none focus:ring-2 focus:ring-cafe-400 focus:border-transparent
-           bg-white text-cafe-900 placeholder-cafe-300
+           bg-white dark:bg-gray-700 text-cafe-900 dark:text-white placeholder-cafe-300 dark:placeholder-gray-400
            transition-all duration-200;
     font-size: 16px; /* Prevents iOS zoom */
   }
@@ -110,11 +122,11 @@
   }
 
   .table-zebra tbody tr:nth-child(even) {
-    @apply bg-cream-50;
+    @apply bg-cream-50 dark:bg-gray-800;
   }
 
   .table-zebra tbody tr:hover {
-    @apply bg-cream-200 transition-colors duration-150;
+    @apply bg-cream-200 dark:bg-gray-700 transition-colors duration-150;
   }
 }
 
@@ -133,6 +145,51 @@
 
 .dark body {
   @apply bg-gray-900;
+}
+
+/*
+  Global dark-mode text color fallbacks for cafe palette.
+  Uses :where() for zero specificity on the .dark selector,
+  so explicit dark:text-* Tailwind classes always win.
+*/
+:where(.dark) .text-cafe-300 {
+  color: #9ca3af; /* gray-400 */
+}
+:where(.dark) .text-cafe-400 {
+  color: #E0CDB0; /* cream-400 */
+}
+:where(.dark) .text-cafe-500 {
+  color: #d4c4a8; /* cream-ish */
+}
+:where(.dark) .text-cafe-600 {
+  color: #EDE0CC; /* cream-300 */
+}
+:where(.dark) .text-cafe-700 {
+  color: #ffffff;
+}
+:where(.dark) .text-cafe-900 {
+  color: #ffffff;
+}
+:where(.dark) .border-cream-100 {
+  border-color: #374151; /* gray-700 */
+}
+:where(.dark) .border-cream-200 {
+  border-color: #374151; /* gray-700 */
+}
+:where(.dark) .border-cream-300 {
+  border-color: #4b5563; /* gray-600 */
+}
+:where(.dark) .bg-cream-50 {
+  background-color: #1f2937; /* gray-800 */
+}
+:where(.dark) .bg-cream-100 {
+  background-color: #1f2937; /* gray-800 */
+}
+:where(.dark) .bg-cream-200 {
+  background-color: #374151; /* gray-700 */
+}
+:where(.dark) .placeholder-cafe-300::placeholder {
+  color: #6b7280; /* gray-500 */
 }
 
 @media (max-width: 767px) {
