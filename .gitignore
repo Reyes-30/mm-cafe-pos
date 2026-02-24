@@ -15,15 +15,14 @@ yarn-error.log*
 
 # Env / secrets
 .env
-.env.*
 backend/.env
 frontend/.env
+!backend/.env.example
 
 # Uploads / data
 uploads/
 backend/uploads/
 frontend/uploads/
-images/
 
 # Editor / OS
 .vscode/

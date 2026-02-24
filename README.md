@@ -20,64 +20,74 @@ Aplicación full-stack con módulos de POS, gestión de menú, reportes, histori
 
 ## 📋 Prerrequisitos
 
-- **Node.js** v18 o superior → [https://nodejs.org](https://nodejs.org)
-- **PostgreSQL** v14 o superior → [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
-- **npm** (incluido con Node.js)
+Antes de instalar, asegúrate de tener:
+
+1. **Node.js** v18 o superior → [https://nodejs.org](https://nodejs.org) (descargar versión LTS)
+2. **PostgreSQL** v14 o superior → [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/)
+
+> **Tip:** Al instalar PostgreSQL, anota el **usuario** (generalmente `postgres`) y la **contraseña** que elijas. Los necesitarás después.
 
 ---
 
-## 🚀 Instalación paso a paso
+## 🚀 Instalación rápida (Windows)
 
-### 1. Crear la base de datos
+### Paso 1: Crear la base de datos
 
-Abre **pgAdmin** o una terminal de PostgreSQL y ejecuta:
+Abre **pgAdmin** (se instala junto con PostgreSQL) y:
 
+1. Click derecho en **Databases** → **Create** → **Database**
+2. Nombre: `mmcafe`
+3. Click **Save**
+
+O si prefieres por terminal, abre **SQL Shell (psql)** y escribe:
 ```sql
-CREATE DATABASE mm_cafe;
+CREATE DATABASE mmcafe;
 ```
 
-### 2. Configurar el Backend
+### Paso 2: Configurar la conexión
 
-```bash
-# Ir a la carpeta del backend
-cd backend
+1. Abre el archivo `backend\.env.example` con un editor de texto
+2. Cámbiale el nombre a `backend\.env`  
+3. Edita la línea `DATABASE_URL` con tus datos de PostgreSQL:
 
-# Instalar dependencias
-npm install
-
-# Configurar variables de entorno
-# Edita el archivo .env y ajusta la conexión a PostgreSQL:
-#   DATABASE_URL="postgresql://TU_USUARIO:TU_PASSWORD@localhost:5432/mm_cafe?schema=public"
-# Cambia TU_USUARIO y TU_PASSWORD por tus credenciales de PostgreSQL.
-
-# Crear las tablas en la base de datos
-npx prisma migrate dev --name init
-
-# Cargar datos iniciales (menú, categorías, usuarios)
-npx prisma db seed
-
-# Iniciar el servidor de desarrollo
-npm run dev
+```env
+DATABASE_URL="postgresql://postgres:TuContraseñaDePostgres@localhost:5432/mmcafe"
 ```
 
-El backend estará corriendo en **http://localhost:4000**.
+> Reemplaza `TuContraseñaDePostgres` con la contraseña que creaste al instalar PostgreSQL.
 
-### 3. Configurar el Frontend
+### Paso 3: Ejecutar la instalación
 
-Abre **otra terminal**:
+Haz **doble clic** en:
 
-```bash
-# Ir a la carpeta del frontend
-cd frontend
-
-# Instalar dependencias
-npm install
-
-# Iniciar el servidor de desarrollo
-npm run dev
+```
+📄 INSTALAR.bat
 ```
 
-El frontend estará corriendo en **http://localhost:5173**.
+Este script automáticamente:
+- ✅ Instala todas las dependencias
+- ✅ Crea las tablas en la base de datos
+- ✅ Carga el menú completo y usuarios iniciales
+- ✅ Compila el frontend
+
+### Paso 4: ¡Iniciar!
+
+Haz **doble clic** en:
+
+```
+📄 INICIAR.bat
+```
+
+Se abrirá una ventana de terminal. Verás algo como:
+
+```
+🚀 M&M Café running on http://localhost:4000
+🌐 LAN: http://192.168.1.XX:4000
+```
+
+**Abre tu navegador** y ve a: **http://localhost:4000**
+
+> 📱 Para acceder desde el celular (misma red WiFi), usa la dirección LAN que aparece en la terminal.
 
 ---
 
@@ -87,6 +97,29 @@ El frontend estará corriendo en **http://localhost:5173**.
 |-----|--------|------------|
 | **Administrador** | `admin@mmcafe.com` | `admin123` |
 | **Cajero** | `cajero@mmcafe.com` | `cajero123` |
+
+> ⚠️ **Importante:** Cambia estas contraseñas desde el módulo de Usuarios una vez que entres al sistema.
+
+---
+
+## 📱 Acceso desde celular/tablet
+
+El sistema funciona como aplicación web. Para acceder desde otros dispositivos:
+
+1. Asegúrate de que estén conectados a la **misma red WiFi**
+2. Usa la dirección **LAN** que mostró INICIAR.bat (ej: `http://192.168.1.5:4000`)
+3. En el celular, puedes **"Agregar a pantalla de inicio"** para que se abra como app
+
+---
+
+## 🔄 Uso diario
+
+1. **Encender la computadora** donde está el sistema
+2. **Ejecutar** `INICIAR.bat` (doble clic)
+3. **Abrir** el navegador en `http://localhost:4000`
+4. **Al terminar**, cierra la ventana de la terminal o presiona `Ctrl+C`
+
+> PostgreSQL se ejecuta automáticamente como servicio de Windows, no necesitas hacer nada con él.
 
 ---
 
@@ -106,8 +139,11 @@ El frontend estará corriendo en **http://localhost:5173**.
 ## 📂 Estructura del proyecto
 
 ```
-M&M/
+MM_Cafe/
+├── INSTALAR.bat               ← Ejecutar una sola vez
+├── INICIAR.bat                ← Ejecutar cada día para abrir el sistema
 ├── backend/
+│   ├── .env                   # Configuración (DB, secretos)
 │   ├── prisma/
 │   │   ├── schema.prisma      # Modelos de la base de datos
 │   │   └── seed.ts            # Datos iniciales
@@ -119,18 +155,10 @@ M&M/
 │   │   ├── validators/        # Esquemas Zod
 │   │   ├── lib/               # Prisma client
 │   │   └── server.ts          # Entry point
-│   ├── .env                   # Variables de entorno
-│   └── package.json
+│   └── uploads/               # Imágenes de productos
 ├── frontend/
-│   ├── src/
-│   │   ├── components/        # Layout, ProtectedRoute
-│   │   ├── pages/             # Páginas de la app
-│   │   ├── stores/            # Estado global (Zustand)
-│   │   ├── lib/               # API client, utilidades
-│   │   ├── types/             # Interfaces TypeScript
-│   │   ├── App.tsx            # Rutas principales
-│   │   └── main.tsx           # Entry point
-│   ├── index.html
+│   ├── src/                   # Código fuente React
+│   ├── dist/                  # Frontend compilado (se genera)
 │   └── package.json
 └── images/                    # Logo y recursos gráficos
 ```
@@ -147,13 +175,43 @@ M&M/
 
 ---
 
+## 🔧 Instalación para desarrollo
+
+Si quieres modificar el código:
+
+```bash
+# Terminal 1 - Backend
+cd backend
+npm install
+npm run dev               # Servidor en http://localhost:4000
+
+# Terminal 2 - Frontend  
+cd frontend
+npm install
+npm run dev               # Vite dev en http://localhost:5173
+```
+
+---
+
+## 🛑 Solución de problemas
+
+| Problema | Solución |
+|----------|----------|
+| "Error en las migraciones" | Verifica que PostgreSQL esté corriendo y que DATABASE_URL sea correcta |
+| "ECONNREFUSED" | PostgreSQL no está encendido. Abre Services (servicios) y busca "postgresql", dale Start |
+| Página en blanco | Ejecuta INSTALAR.bat de nuevo para recompilar el frontend |
+| No carga desde celular | Verifica que estén en la misma red WiFi |
+| "Puerto 4000 en uso" | Cierra la terminal anterior o cambia el PORT en backend/.env |
+
+---
+
 ## 💡 Notas
 
 - La moneda utilizada es **Lempiras (L.)** 🇭🇳
 - Las imágenes de productos se guardan en `backend/uploads/`
-- El sistema soporta **modo oscuro** 🌙
+- El sistema soporta **modo oscuro** 🌙 (botón en el header)
 - Las contraseñas se encriptan con bcrypt (12 rounds)
-- Los tokens de acceso expiran en 15 minutos con refresh automático
+- Los tokens de acceso expiran en 8 horas con refresh automático
 
 ---
 
