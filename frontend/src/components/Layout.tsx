@@ -15,6 +15,7 @@ import {
   Moon,
   ChevronDown,
   Coffee,
+  Calculator,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
@@ -25,8 +26,9 @@ const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['ADMIN'] },
   { to: '/pos', label: 'POS', icon: ShoppingCart, roles: ['ADMIN', 'CAJERO'] },
   { to: '/menu', label: 'Menú', icon: UtensilsCrossed, roles: ['ADMIN'] },
-  { to: '/reportes', label: 'Reportes', icon: FileText, roles: ['ADMIN', 'CAJERO'] },
+  { to: '/reportes', label: 'Reportes', icon: FileText, roles: ['ADMIN'] },
   { to: '/historial', label: 'Historial', icon: History, roles: ['ADMIN', 'CAJERO'] },
+  { to: '/cierre-caja', label: 'Cierre', icon: Calculator, roles: ['CAJERO'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['ADMIN'] },
 ];
 

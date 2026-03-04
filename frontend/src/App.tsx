@@ -10,6 +10,7 @@ import MenuPage from './pages/MenuPage';
 import ReportesPage from './pages/ReportesPage';
 import HistorialPage from './pages/HistorialPage';
 import UsuariosPage from './pages/UsuariosPage';
+import CierreCajaPage from './pages/CierreCajaPage';
 
 function App() {
   const { isAuthenticated, user } = useAuthStore();
@@ -66,12 +67,20 @@ function App() {
           <Route
             path="/reportes"
             element={
-              <ProtectedRoute roles={['ADMIN', 'CAJERO']}>
+              <ProtectedRoute roles={['ADMIN']}>
                 <ReportesPage />
               </ProtectedRoute>
             }
           />
           <Route path="/historial" element={<HistorialPage />} />
+          <Route
+            path="/cierre-caja"
+            element={
+              <ProtectedRoute roles={['CAJERO', 'ADMIN']}>
+                <CierreCajaPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/usuarios"
             element={
