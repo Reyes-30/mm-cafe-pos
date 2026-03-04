@@ -4,6 +4,8 @@ export interface User {
   email: string;
   role: 'ADMIN' | 'CAJERO';
   isActive: boolean;
+  mustChangePassword: boolean;
+  emailVerified: boolean;
   createdAt: string;
   _count?: { orders: number };
   totalProcessed?: number;

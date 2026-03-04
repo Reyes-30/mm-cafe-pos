@@ -11,6 +11,8 @@ import ReportesPage from './pages/ReportesPage';
 import HistorialPage from './pages/HistorialPage';
 import UsuariosPage from './pages/UsuariosPage';
 import CierreCajaPage from './pages/CierreCajaPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 function App() {
   const { isAuthenticated, user } = useAuthStore();
@@ -29,9 +31,7 @@ function App() {
         }}
       />
       <Routes>
-        <Route
-          path="/login"
-          element={
+        <Route path="/login" element={
             isAuthenticated ? (
               <Navigate to={user?.role === 'ADMIN' ? '/dashboard' : '/pos'} replace />
             ) : (
@@ -39,6 +39,8 @@ function App() {
             )
           }
         />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route
           element={

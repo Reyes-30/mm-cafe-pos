@@ -10,6 +10,11 @@ export const config = {
     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   },
+  gmail: {
+    user: process.env.GMAIL_USER || '',
+    appPassword: process.env.GMAIL_APP_PASSWORD || '',
+  },
+  appUrl: process.env.APP_URL || 'http://localhost:5173',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   upload: {
     dir: process.env.UPLOAD_DIR || 'uploads',
