@@ -375,7 +375,7 @@ export default function POSPage() {
   const renderSidebar = (isMobile = false) => (
     <div className={`${
       isMobile
-        ? 'flex flex-col flex-1 min-h-0'
+        ? 'flex flex-col flex-1 min-h-0 overflow-hidden'
         : 'w-full lg:w-[370px] xl:w-96 card flex flex-col min-w-0 min-h-0 flex-1'
     }`}>
       {/* Tabs */}
@@ -508,7 +508,10 @@ export default function POSPage() {
 
           {/* Cart Footer */}
           {cartItems.length > 0 && (
-            <div className="p-3 sm:p-4 border-t border-cream-200 dark:border-gray-700 space-y-2 sm:space-y-3 flex-shrink-0">
+            <div
+              className="p-3 sm:p-4 border-t border-cream-200 dark:border-gray-700 space-y-2 sm:space-y-3 flex-shrink-0"
+              style={isMobile ? { paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px) + 60px)' } : undefined}
+            >
               {/* Order note */}
               <input
                 type="text"
