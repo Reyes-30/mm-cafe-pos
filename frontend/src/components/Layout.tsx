@@ -25,7 +25,7 @@ const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['ADMIN'] },
   { to: '/pos', label: 'POS', icon: ShoppingCart, roles: ['ADMIN', 'CAJERO'] },
   { to: '/menu', label: 'Menú', icon: UtensilsCrossed, roles: ['ADMIN'] },
-  { to: '/reportes', label: 'Reportes', icon: FileText, roles: ['ADMIN'] },
+  { to: '/reportes', label: 'Reportes', icon: FileText, roles: ['ADMIN', 'CAJERO'] },
   { to: '/historial', label: 'Historial', icon: History, roles: ['ADMIN', 'CAJERO'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['ADMIN'] },
 ];
