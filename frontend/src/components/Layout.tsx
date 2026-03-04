@@ -342,7 +342,7 @@ export default function Layout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 min-h-0 pb-20 md:pb-6 safe-bottom overflow-auto" style={{ padding: 0, width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
+        <main className="flex-1 min-h-0 main-page-content overflow-auto" style={{ padding: 0, width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
           <Outlet />
         </main>
       </div>

@@ -508,7 +508,7 @@ export default function POSPage() {
 
           {/* Cart Footer */}
           {cartItems.length > 0 && (
-            <div className={`p-3 sm:p-4 border-t border-cream-200 dark:border-gray-700 space-y-2 sm:space-y-3 flex-shrink-0 ${isMobile ? 'pb-20' : ''}`}>
+            <div className="p-3 sm:p-4 border-t border-cream-200 dark:border-gray-700 space-y-2 sm:space-y-3 flex-shrink-0">
               {/* Order note */}
               <input
                 type="text"
@@ -881,7 +881,7 @@ export default function POSPage() {
 
         {/* Botón flotante para ver carrito en móvil cuando hay productos */}
         {mobileView === 'menu' && getItemCount() > 0 && (
-          <div className="fixed left-4 right-4 bottom-16 z-40 pointer-events-none">
+          <div className="fixed left-4 right-4 z-40 pointer-events-none" style={{ bottom: 'calc(68px + env(safe-area-inset-bottom, 0px))' }}>
             <button
               onClick={() => setMobileView('cart')}
               className="w-full bg-cafe-700 text-white py-2.5 rounded-full font-semibold shadow-lg flex items-center justify-center gap-2 pointer-events-auto"

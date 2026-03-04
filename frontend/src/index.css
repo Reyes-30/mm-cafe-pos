@@ -121,12 +121,25 @@
     padding-top: env(safe-area-inset-top, 0px);
   }
 
+  /* Main page content: espacio inferior para la barra de navegación móvil
+     Incluye safe-area-inset-bottom para teléfonos con barra de gestos */
+  .main-page-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
   .table-zebra tbody tr:nth-child(even) {
     @apply bg-cream-50 dark:bg-gray-800;
   }
 
   .table-zebra tbody tr:hover {
     @apply bg-cream-200 dark:bg-gray-700 transition-colors duration-150;
+  }
+}
+
+/* En pantallas md+ no hay barra de navegación inferior */
+@media (min-width: 768px) {
+  .main-page-content {
+    padding-bottom: 24px;
   }
 }
 
