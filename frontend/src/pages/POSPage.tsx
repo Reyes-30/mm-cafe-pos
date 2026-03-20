@@ -121,10 +121,10 @@ export default function POSPage() {
   }, [sidebarTab, loadPendingOrders]);
 
   useEffect(() => {
-    if (sidebarTab !== 'pending') return;
-    const interval = setInterval(loadPendingOrders, 15000);
+    loadPendingOrders();
+    const interval = setInterval(loadPendingOrders, 7000);
     return () => clearInterval(interval);
-  }, [sidebarTab, loadPendingOrders]);
+  }, [loadPendingOrders]);
 
   const filteredProducts = products.filter((p) => {
     const matchesCategory = !selectedCategory || p.categoryId === selectedCategory;
