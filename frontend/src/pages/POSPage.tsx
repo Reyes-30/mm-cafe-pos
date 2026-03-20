@@ -418,9 +418,7 @@ export default function POSPage() {
       {sidebarTab === 'cart' && (
         <>
           {/* Cart Items */}
-          <div className={`flex-1 min-h-0 overflow-y-auto p-3 pr-4 space-y-2 ${
-            isMobile ? '' : 'max-h-[calc(100vh-280px)]'
-          }`}>
+          <div className="flex-1 min-h-0 overflow-y-auto p-3 pr-4 space-y-2">
             <AnimatePresence>
               {cartItems.length === 0 ? (
                 <div className="text-center py-12 text-cafe-300">
