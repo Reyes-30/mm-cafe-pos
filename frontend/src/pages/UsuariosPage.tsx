@@ -82,7 +82,7 @@ export default function UsuariosPage() {
 
   const toggleStatus = async (userId: number) => {
     try {
-      await api.patch(`/users/${userId}/toggle-status`);
+      await api.patch(`/users/${userId}/toggle`);
       toast.success('Estado actualizado');
       loadUsers();
     } catch {
