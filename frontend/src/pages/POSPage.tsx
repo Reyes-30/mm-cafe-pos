@@ -376,7 +376,7 @@ export default function POSPage() {
     <div className={`${
       isMobile
         ? 'flex flex-col flex-1 min-h-0 overflow-hidden'
-        : 'w-full lg:w-[370px] xl:w-96 card flex flex-col min-w-0 min-h-0 flex-1'
+        : 'w-full lg:w-[370px] xl:w-96 card flex flex-col min-w-0 min-h-0 h-full'
     }`}>
       {/* Tabs */}
       <div className="flex border-b border-cream-200 dark:border-gray-700 flex-shrink-0">
@@ -658,7 +658,7 @@ export default function POSPage() {
           </div>
 
           {/* Sidebar - 40% on tablet */}
-          <div className="w-[40%] lg:w-[370px] xl:w-96">
+          <div className="w-[40%] lg:w-[370px] xl:w-96 min-h-0 h-full flex">
             {renderSidebar(false)}
           </div>
         </div>
