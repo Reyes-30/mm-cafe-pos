@@ -9,18 +9,12 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
-  setUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>()((set) => ({
   user: JSON.parse(localStorage.getItem('user') || 'null'),
   isAuthenticated: !!localStorage.getItem('accessToken'),
   isLoading: false,
-
-  setUser: (user: User) => {
-    localStorage.setItem('user', JSON.stringify(user));
-    set({ user });
-  },
 
   login: async (email: string, password: string) => {
     set({ isLoading: true });
@@ -57,15 +51,12 @@ export const useAuthStore = create<AuthState>()((set) => ({
     }
     try {
       const response = await api.get('/auth/me');
-      const user = response.data;
-      localStorage.setItem('user', JSON.stringify(user));
-      set({ user, isAuthenticated: true });
+      set({ user: response.data, isAuthenticated: true });
     } catch {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
       set({ user: null, isAuthenticated: false });
     }
-  },
   },
 }));

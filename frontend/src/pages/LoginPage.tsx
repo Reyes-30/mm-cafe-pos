@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Coffee, Eye, EyeOff, LogIn } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
@@ -11,13 +11,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading } = useAuthStore();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  useEffect(() => {
-    const verified = searchParams.get('verified');
-    if (verified === 'ok') toast.success('¡Correo verificado! Ya podés iniciar sesión.');
-    if (verified === 'error') toast.error('Enlace inválido o expirado. Solicitá uno nuevo desde la app.');
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,20 +124,6 @@ export default function LoginPage() {
                 </>
               )}
             </motion.button>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-center mt-3"
-            >
-              <Link
-                to="/forgot-password"
-                className="text-sm text-cafe-400 hover:text-cafe-700 transition-colors"
-              >
-                ¿Olvidaste tu contraseña?
-              </Link>
-            </motion.div>
           </form>
 
           {/* Footer */}

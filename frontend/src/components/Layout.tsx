@@ -16,13 +16,10 @@ import {
   ChevronDown,
   Coffee,
   Calculator,
-  MailWarning,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
 import { useCartStore } from '../stores/cartStore';
-import ForceChangeModal from './ForceChangeModal';
-import api from '../lib/api';
 import toast from 'react-hot-toast';
 
 const navItems = [
@@ -39,7 +36,6 @@ export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [resendingVerification, setResendingVerification] = useState(false);
   const { user, logout } = useAuthStore();
   const { isDark, toggleTheme } = useThemeStore();
   const cartCount = useCartStore((s) => s.getItemCount());
@@ -67,18 +63,6 @@ export default function Layout() {
     navigate('/login');
   };
 
-  const handleResendVerification = async () => {
-    setResendingVerification(true);
-    try {
-      await api.post('/auth/resend-verification');
-      toast.success('Correo de verificación reenviado. Revisá tu bandeja.');
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Error al enviar el correo');
-    } finally {
-      setResendingVerification(false);
-    }
-  };
-
   const filteredNav = navItems.filter((item) =>
     item.roles.includes(user?.role || '')
   );
@@ -88,7 +72,6 @@ export default function Layout() {
 
   return (
     <div className="h-screen h-[100dvh] bg-cream-100 dark:bg-gray-900 flex overflow-hidden">
-      <ForceChangeModal />
       {/* ============ Sidebar - Desktop (lg+) ============ */}
       <motion.aside
         initial={false}
@@ -359,25 +342,6 @@ export default function Layout() {
             </div>
           </div>
         </header>
-
-        {/* Email Verification Banner */}
-        {user && !user.emailVerified && !user.mustChangePassword && (
-          <div className="bg-amber-50 dark:bg-amber-900/20 border-b border-amber-200 dark:border-amber-700/30 px-4 py-2 flex items-center justify-between gap-2 flex-shrink-0">
-            <div className="flex items-center gap-2 min-w-0">
-              <MailWarning size={16} className="text-amber-600 flex-shrink-0" />
-              <p className="text-xs text-amber-700 dark:text-amber-400 truncate">
-                Verificá tu correo <strong>{user.email}</strong> para mayor seguridad.
-              </p>
-            </div>
-            <button
-              onClick={handleResendVerification}
-              disabled={resendingVerification}
-              className="text-xs font-semibold text-amber-700 dark:text-amber-400 hover:underline flex-shrink-0 cursor-pointer select-none"
-            >
-              {resendingVerification ? 'Enviando...' : 'Reenviar'}
-            </button>
-          </div>
-        )}
 
         {/* Page Content */}
         <main className="flex-1 min-h-0 main-page-content overflow-auto" style={{ paddingTop: 0, paddingLeft: 0, paddingRight: 0, width: '100%', boxSizing: 'border-box', overflowX: 'hidden' }}>
