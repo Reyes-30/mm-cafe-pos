@@ -9,7 +9,8 @@ datasource db {
 
 enum Role {
   ADMIN
-  CAJERO
+  EMPLEADO
+  COCINA
 }
 
 enum PaymentMethod {
@@ -19,8 +20,15 @@ enum PaymentMethod {
 
 enum OrderStatus {
   PENDIENTE
+  EN_PREPARACION
+  LISTA
   COMPLETADA
   ANULADA
+}
+
+enum ServiceType {
+  PARA_LLEVAR
+  COMER_AQUI
 }
 
 model User {
@@ -28,7 +36,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      Role     @default(CAJERO)
+  role      Role     @default(EMPLEADO)
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,6 +79,7 @@ model Order {
   cashReceived  Float?
   change        Float?
   note          String?
+  serviceType   ServiceType?
   status        OrderStatus   @default(PENDIENTE)
   voidReason    String?
   userId        Int

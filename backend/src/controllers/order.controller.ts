@@ -17,7 +17,7 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: parsed.error.errors[0].message });
     }
 
-    const { items, paymentMethod, cashReceived, note } = parsed.data;
+    const { items, paymentMethod, cashReceived, note, serviceType } = parsed.data;
 
     // Validate products and calculate total
     let total = 0;
@@ -81,6 +81,7 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
         cashReceived: cashReceived || null,
         change,
         note: note || null,
+        serviceType: serviceType as any || null,
         status: status as any,
         userId: req.user!.id,
         items: { create: orderItems },
@@ -115,8 +116,8 @@ export const completeOrder = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ error: 'Orden no encontrada' });
     }
 
-    if (order.status !== 'PENDIENTE') {
-      return res.status(400).json({ error: 'Solo se pueden completar órdenes pendientes' });
+    if (!['PENDIENTE', 'LISTA'].includes(order.status)) {
+      return res.status(400).json({ error: 'Solo se pueden completar órdenes pendientes o listas' });
     }
 
     const { paymentMethod, cashReceived } = parsed.data;
@@ -154,7 +155,11 @@ export const completeOrder = async (req: AuthRequest, res: Response) => {
 export const getPendingOrders = async (_req: Request, res: Response) => {
   try {
     const orders = await prisma.order.findMany({
-      where: { status: 'PENDIENTE' },
+      where: { 
+        status: {
+          in: ['PENDIENTE', 'EN_PREPARACION', 'LISTA']
+        }
+      },
       include: {
         items: {
           include: { product: { select: { name: true, imageUrl: true } } },
@@ -295,5 +300,68 @@ export const voidOrder = async (req: AuthRequest, res: Response) => {
     return res.json(updated);
   } catch (error) {
     return res.status(500).json({ error: 'Error al anular la orden' });
+  }
+};
+
+// Kitchen functions
+export const startPreparingOrder = async (req: AuthRequest, res: Response) => {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: parseInt(req.params.id as string) },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: 'Orden no encontrada' });
+    }
+
+    if (order.status !== 'PENDIENTE') {
+      return res.status(400).json({ error: 'Solo se pueden preparar órdenes pendientes' });
+    }
+
+    const updated = await prisma.order.update({
+      where: { id: order.id },
+      data: { status: 'EN_PREPARACION' },
+      include: {
+        items: {
+          include: { product: { select: { name: true, imageUrl: true } } },
+        },
+        user: { select: { name: true } },
+      },
+    });
+
+    return res.json(updated);
+  } catch (error) {
+    return res.status(500).json({ error: 'Error al cambiar estado de la orden' });
+  }
+};
+
+export const markOrderReady = async (req: AuthRequest, res: Response) => {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: parseInt(req.params.id as string) },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: 'Orden no encontrada' });
+    }
+
+    if (order.status !== 'EN_PREPARACION') {
+      return res.status(400).json({ error: 'Solo se pueden marcar como listas órdenes en preparación' });
+    }
+
+    const updated = await prisma.order.update({
+      where: { id: order.id },
+      data: { status: 'LISTA' },
+      include: {
+        items: {
+          include: { product: { select: { name: true, imageUrl: true } } },
+        },
+        user: { select: { name: true } },
+      },
+    });
+
+    return res.json(updated);
+  } catch (error) {
+    return res.status(500).json({ error: 'Error al cambiar estado de la orden' });
   }
 };

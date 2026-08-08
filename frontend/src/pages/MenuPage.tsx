@@ -28,6 +28,12 @@ export default function MenuPage() {
   const [showMenuRef, setShowMenuRef] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Category management
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [categoryName, setCategoryName] = useState('');
+  const [savingCategory, setSavingCategory] = useState(false);
+
   // Form state
   const [formData, setFormData] = useState({
     name: '',
@@ -162,6 +168,59 @@ export default function MenuPage() {
     }
   };
 
+  // Category functions
+  const openCategoryForm = (category?: Category) => {
+    if (category) {
+      setEditingCategory(category);
+      setCategoryName(category.name);
+    } else {
+      setEditingCategory(null);
+      setCategoryName('');
+    }
+    setShowCategoryForm(true);
+  };
+
+  const handleCategorySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!categoryName.trim()) {
+      toast.error('El nombre de la categoría es requerido');
+      return;
+    }
+
+    setSavingCategory(true);
+    try {
+      if (editingCategory) {
+        await api.put(`/categories/${editingCategory.id}`, { name: categoryName.trim() });
+        toast.success('Categoría actualizada');
+      } else {
+        await api.post('/categories', { name: categoryName.trim() });
+        toast.success('Categoría creada');
+      }
+      setShowCategoryForm(false);
+      loadData();
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Error al guardar categoría');
+    } finally {
+      setSavingCategory(false);
+    }
+  };
+
+  const handleDeleteCategory = async (category: Category) => {
+    if (category._count?.products && category._count.products > 0) {
+      toast.error('No se puede eliminar una categoría con productos');
+      return;
+    }
+    if (!confirm(`¿Eliminar categoría "${category.name}"?`)) return;
+
+    try {
+      await api.delete(`/categories/${category.id}`);
+      setCategories((prev) => prev.filter((c) => c.id !== category.id));
+      toast.success('Categoría eliminada');
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Error al eliminar categoría');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -193,12 +252,56 @@ export default function MenuPage() {
               Menú Ref.
             </button>
             <button
+              onClick={() => openCategoryForm()}
+              className="btn-outline text-xs sm:text-sm flex items-center gap-1 sm:gap-2"
+            >
+              <Plus size={16} />
+              Nueva Categoría
+            </button>
+            <button
               onClick={() => openForm()}
               className="btn-primary flex items-center gap-2"
             >
               <Plus size={18} />
               Nuevo Producto
             </button>
+          </div>
+        </div>
+
+        {/* Categories Management Section */}
+        <div className="card mb-4">
+          <div className="p-4">
+            <h3 className="text-sm font-semibold text-cafe-700 dark:text-white mb-3">
+              Categorías ({categories.length})
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <div
+                  key={cat.id}
+                  className="flex items-center gap-2 bg-cream-100 dark:bg-gray-800 px-3 py-2 rounded-lg border border-cream-200 dark:border-gray-700"
+                >
+                  <span className="text-sm text-cafe-700 dark:text-white font-medium">
+                    {cat.name}
+                  </span>
+                  <span className="text-xs text-cafe-400">
+                    ({cat._count?.products || 0})
+                  </span>
+                  <button
+                    onClick={() => openCategoryForm(cat)}
+                    className="p-1 hover:bg-cream-200 dark:hover:bg-gray-700 rounded text-cafe-500 hover:text-cafe-700 transition-colors"
+                  >
+                    <Edit3 size={14} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCategory(cat)}
+                    className="p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded text-red-400 hover:text-red-600 transition-colors"
+                    disabled={!!cat._count?.products && cat._count.products > 0}
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -580,6 +683,83 @@ export default function MenuPage() {
                       <>
                         <Save size={18} />
                         {editingProduct ? 'Actualizar' : 'Crear'}
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Category Form Modal */}
+      <AnimatePresence>
+        {showCategoryForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowCategoryForm(false)}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden"
+            >
+              <div className="p-4 sm:p-6 border-b border-cream-200 dark:border-gray-700 flex items-center justify-between">
+                <h2 className="text-xl font-display font-bold text-cafe-700 dark:text-white">
+                  {editingCategory ? 'Editar Categoría' : 'Nueva Categoría'}
+                </h2>
+                <button
+                  onClick={() => setShowCategoryForm(false)}
+                  className="text-cafe-400 hover:text-cafe-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              <form onSubmit={handleCategorySubmit} className="p-4 sm:p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-cafe-700 dark:text-cream-200 mb-2">
+                    Nombre de la Categoría *
+                  </label>
+                  <input
+                    type="text"
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
+                    className="input-field"
+                    placeholder="Ej: Hamburguesas, Bebidas..."
+                    required
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowCategoryForm(false)}
+                    className="btn-outline flex-1"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={savingCategory}
+                    className="btn-primary flex-1 flex items-center justify-center gap-2"
+                  >
+                    {savingCategory ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Guardando...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={18} />
+                        Guardar
                       </>
                     )}
                   </button>

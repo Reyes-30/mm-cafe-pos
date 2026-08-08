@@ -26,7 +26,7 @@ export default function UsuariosPage() {
     name: '',
     email: '',
     password: '',
-    role: 'CAJERO' as 'ADMIN' | 'CAJERO',
+    role: 'EMPLEADO' as 'ADMIN' | 'EMPLEADO' | 'COCINA',
   });
   const [saving, setSaving] = useState(false);
 
@@ -48,7 +48,7 @@ export default function UsuariosPage() {
 
   const handleCreate = () => {
     setEditing(null);
-    setFormData({ name: '', email: '', password: '', role: 'CAJERO' });
+    setFormData({ name: '', email: '', password: '', role: 'EMPLEADO' });
     setShowModal(true);
   };
 
@@ -151,10 +151,12 @@ export default function UsuariosPage() {
                   className={`text-xs px-2 py-1 rounded-full font-medium ${
                     u.role === 'ADMIN'
                       ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
+                      : u.role === 'COCINA'
+                      ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
                       : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                   }`}
                 >
-                  {u.role}
+                  {u.role === 'EMPLEADO' ? 'Empleado' : u.role === 'COCINA' ? 'Cocina' : 'Admin'}
                 </span>
               </div>
 
@@ -164,6 +166,8 @@ export default function UsuariosPage() {
                   className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-base sm:text-lg font-bold ${
                     u.role === 'ADMIN'
                       ? 'bg-gradient-to-br from-purple-500 to-purple-700'
+                      : u.role === 'COCINA'
+                      ? 'bg-gradient-to-br from-orange-500 to-orange-700'
                       : 'bg-gradient-to-br from-cafe-500 to-cafe-700'
                   }`}
                 >
@@ -311,10 +315,11 @@ export default function UsuariosPage() {
                   </label>
                   <select
                     value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value as 'ADMIN' | 'CAJERO' })}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value as 'ADMIN' | 'EMPLEADO' | 'COCINA' })}
                     className="input-field"
                   >
-                    <option value="CAJERO">Cajero</option>
+                    <option value="EMPLEADO">Empleado</option>
+                    <option value="COCINA">Cocina</option>
                     <option value="ADMIN">Administrador</option>
                   </select>
                 </div>

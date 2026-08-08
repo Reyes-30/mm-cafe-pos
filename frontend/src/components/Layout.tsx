@@ -16,6 +16,7 @@ import {
   ChevronDown,
   Coffee,
   Calculator,
+  ChefHat,
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
@@ -24,11 +25,12 @@ import toast from 'react-hot-toast';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['ADMIN'] },
-  { to: '/pos', label: 'POS', icon: ShoppingCart, roles: ['ADMIN', 'CAJERO'] },
+  { to: '/pos', label: 'POS', icon: ShoppingCart, roles: ['ADMIN', 'EMPLEADO'] },
+  { to: '/cocina', label: 'Cocina', icon: ChefHat, roles: ['COCINA'] },
   { to: '/menu', label: 'Menú', icon: UtensilsCrossed, roles: ['ADMIN'] },
   { to: '/reportes', label: 'Reportes', icon: FileText, roles: ['ADMIN'] },
-  { to: '/historial', label: 'Historial', icon: History, roles: ['ADMIN', 'CAJERO'] },
-  { to: '/cierre-caja', label: 'Cierre', icon: Calculator, roles: ['CAJERO'] },
+  { to: '/historial', label: 'Historial', icon: History, roles: ['ADMIN', 'EMPLEADO'] },
+  { to: '/cierre-caja', label: 'Cierre', icon: Calculator, roles: ['EMPLEADO'] },
   { to: '/usuarios', label: 'Usuarios', icon: Users, roles: ['ADMIN'] },
 ];
 

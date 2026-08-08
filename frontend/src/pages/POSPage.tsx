@@ -47,6 +47,7 @@ export default function POSPage() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [orderNote, setOrderNote] = useState('');
+  const [serviceType, setServiceType] = useState<'PARA_LLEVAR' | 'COMER_AQUI'>('COMER_AQUI');
   const [processing, setProcessing] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -151,11 +152,13 @@ export default function POSPage() {
           note: item.note || undefined,
         })),
         note: orderNote || undefined,
+        serviceType: serviceType,
       };
 
       const response = await api.post('/orders', orderData);
       clearCart();
       setOrderNote('');
+      setServiceType('COMER_AQUI');
       setSentOrderNumber(response.data.orderNumber);
       setShowSentConfirm(true);
       toast.success('¡Pedido enviado a cocina!');
@@ -510,13 +513,37 @@ export default function POSPage() {
               className="p-3 sm:p-4 border-t border-cream-200 dark:border-gray-700 space-y-2 sm:space-y-3 flex-shrink-0"
               style={isMobile ? { paddingBottom: 'calc(16px + env(safe-area-inset-bottom, 0px) + 60px)' } : undefined}
             >
+              {/* Service Type */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setServiceType('COMER_AQUI')}
+                  className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all min-h-[44px] cursor-pointer select-none ${
+                    serviceType === 'COMER_AQUI'
+                      ? 'bg-cafe-700 text-white shadow-md'
+                      : 'bg-white dark:bg-gray-800 text-cafe-600 border border-cream-200 dark:border-gray-700 hover:border-cafe-300'
+                  }`}
+                >
+                  🍽️ Comer Aquí
+                </button>
+                <button
+                  onClick={() => setServiceType('PARA_LLEVAR')}
+                  className={`py-2.5 px-3 rounded-xl text-sm font-medium transition-all min-h-[44px] cursor-pointer select-none ${
+                    serviceType === 'PARA_LLEVAR'
+                      ? 'bg-cafe-700 text-white shadow-md'
+                      : 'bg-white dark:bg-gray-800 text-cafe-600 border border-cream-200 dark:border-gray-700 hover:border-cafe-300'
+                  }`}
+                >
+                  🛍️ Para Llevar
+                </button>
+              </div>
+
               {/* Order note */}
               <input
                 type="text"
                 value={orderNote}
                 onChange={(e) => setOrderNote(e.target.value)}
                 className="input-field text-sm py-2"
-                placeholder="Nota del pedido (mesa, para llevar...)"
+                placeholder="Nota del pedido (sin cebolla, extra salsa...)"
               />
 
               <div className="flex justify-between items-center gap-2 pr-1">

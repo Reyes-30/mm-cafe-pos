@@ -9,14 +9,14 @@ export const createUserSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
-  role: z.enum(['ADMIN', 'CAJERO']),
+  role: z.enum(['ADMIN', 'EMPLEADO', 'COCINA']),
 });
 
 export const updateUserSchema = z.object({
   name: z.string().min(2).optional(),
   email: z.string().email().optional(),
   password: z.string().min(6).optional(),
-  role: z.enum(['ADMIN', 'CAJERO']).optional(),
+  role: z.enum(['ADMIN', 'EMPLEADO', 'COCINA']).optional(),
   isActive: z.boolean().optional(),
 });
 
@@ -30,6 +30,10 @@ export const productSchema = z.object({
 
 export const updateProductSchema = productSchema.partial();
 
+export const categorySchema = z.object({
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+});
+
 export const orderSchema = z.object({
   items: z.array(z.object({
     productId: z.number().int().positive(),
@@ -39,6 +43,7 @@ export const orderSchema = z.object({
   paymentMethod: z.enum(['EFECTIVO', 'TARJETA']).optional(),
   cashReceived: z.number().positive().optional(),
   note: z.string().optional(),
+  serviceType: z.enum(['PARA_LLEVAR', 'COMER_AQUI']).optional(),
 });
 
 export const completeOrderSchema = z.object({

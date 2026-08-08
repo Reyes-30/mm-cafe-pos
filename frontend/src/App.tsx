@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import POSPage from './pages/POSPage';
+import CocinaPage from './pages/CocinaPage';
 import MenuPage from './pages/MenuPage';
 import ReportesPage from './pages/ReportesPage';
 import HistorialPage from './pages/HistorialPage';
@@ -33,7 +34,14 @@ function App() {
           path="/login"
           element={
             isAuthenticated ? (
-              <Navigate to={user?.role === 'ADMIN' ? '/dashboard' : '/pos'} replace />
+              <Navigate 
+                to={
+                  user?.role === 'ADMIN' ? '/dashboard' : 
+                  user?.role === 'COCINA' ? '/cocina' : 
+                  '/pos'
+                } 
+                replace 
+              />
             ) : (
               <LoginPage />
             )
@@ -57,6 +65,14 @@ function App() {
           />
           <Route path="/pos" element={<POSPage />} />
           <Route
+            path="/cocina"
+            element={
+              <ProtectedRoute roles={['COCINA']}>
+                <CocinaPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/menu"
             element={
               <ProtectedRoute roles={['ADMIN']}>
@@ -76,7 +92,7 @@ function App() {
           <Route
             path="/cierre-caja"
             element={
-              <ProtectedRoute roles={['CAJERO', 'ADMIN']}>
+              <ProtectedRoute roles={['EMPLEADO', 'ADMIN']}>
                 <CierreCajaPage />
               </ProtectedRoute>
             }
@@ -94,7 +110,16 @@ function App() {
         <Route
           path="*"
           element={
-            <Navigate to={isAuthenticated ? (user?.role === 'ADMIN' ? '/dashboard' : '/pos') : '/login'} replace />
+            <Navigate 
+              to={
+                isAuthenticated ? (
+                  user?.role === 'ADMIN' ? '/dashboard' : 
+                  user?.role === 'COCINA' ? '/cocina' : 
+                  '/pos'
+                ) : '/login'
+              } 
+              replace 
+            />
           }
         />
       </Routes>

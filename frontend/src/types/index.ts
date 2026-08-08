@@ -2,7 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'ADMIN' | 'CAJERO';
+  role: 'ADMIN' | 'EMPLEADO' | 'COCINA';
   isActive: boolean;
   createdAt: string;
   _count?: { orders: number };
@@ -48,7 +48,8 @@ export interface Order {
   cashReceived: number | null;
   change: number | null;
   note: string | null;
-  status: 'PENDIENTE' | 'COMPLETADA' | 'ANULADA';
+  serviceType: 'PARA_LLEVAR' | 'COMER_AQUI' | null;
+  status: 'PENDIENTE' | 'EN_PREPARACION' | 'LISTA' | 'COMPLETADA' | 'ANULADA';
   voidReason: string | null;
   userId: number;
   createdAt: string;

@@ -14,7 +14,8 @@ export default function ProtectedRoute({ children, roles }: ProtectedRouteProps)
   }
 
   if (roles && user && !roles.includes(user.role)) {
-    return <Navigate to="/pos" replace />;
+    const defaultRoute = user.role === 'ADMIN' ? '/dashboard' : user.role === 'COCINA' ? '/cocina' : '/pos';
+    return <Navigate to={defaultRoute} replace />;
   }
 
   return <>{children}</>;
