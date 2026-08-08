@@ -3,7 +3,7 @@ services:
     name: mm-cafe
     runtime: node
     plan: free
-    buildCommand: npm run build && npm run migrate && npm run seed
+    buildCommand: npm run build && npm run fix-migration && npm run seed
     startCommand: npm run start
     envVars:
       - key: NODE_ENV

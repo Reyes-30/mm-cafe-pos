@@ -9,7 +9,8 @@
     "build": "npm run install:all && npm run build:frontend && npm run build:backend",
     "start": "cd backend && node dist/server.js",
     "seed": "cd backend && npx tsx prisma/seed.ts",
-    "migrate": "cd backend && (npx prisma migrate deploy || echo Prisma migrate bloqueado, se continua deploy)"
+    "migrate": "cd backend && (npx prisma migrate deploy || echo Prisma migrate bloqueado, se continua deploy)",
+    "fix-migration": "cd backend && npm run fix-migration"
   },
   "engines": {
     "node": ">=18.0.0"
