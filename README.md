@@ -96,7 +96,8 @@ Se abrirá una ventana de terminal. Verás algo como:
 | Rol | Correo | Contraseña |
 |-----|--------|------------|
 | **Administrador** | `admin@mmcafe.com` | `admin123` |
-| **Cajero** | `cajero@mmcafe.com` | `cajero123` |
+| **Empleado** | `empleado@mmcafe.com` | `empleado123` |
+| **Cocina** | `cocina@mmcafe.com` | `cocina123` |
 
 > ⚠️ **Importante:** Cambia estas contraseñas desde el módulo de Usuarios una vez que entres al sistema.
 
@@ -128,11 +129,13 @@ El sistema funciona como aplicación web. Para acceder desde otros dispositivos:
 | Módulo | Descripción | Acceso |
 |--------|-------------|--------|
 | **Dashboard** | Ventas del día, semana, gráficas, actividad reciente | Admin |
-| **Punto de Venta** | Crear órdenes, carrito, cobro en efectivo/tarjeta | Admin, Cajero |
-| **Gestión de Menú** | CRUD de productos, categorías, disponibilidad | Admin |
+| **Punto de Venta** | Crear órdenes, carrito, enviar a cocina, cobro | Admin, Empleado |
+| **Cocina** | Ver pedidos pendientes, marcar en preparación y listos | Cocina |
+| **Gestión de Menú** | CRUD de productos y categorías, disponibilidad | Admin |
 | **Reportes** | Reportes por rango de fechas, exportar PDF y Excel | Admin |
-| **Historial** | Consulta de ventas con filtros, ver detalle, anular | Admin, Cajero (solo ver) |
-| **Usuarios** | CRUD de usuarios, activar/desactivar cuentas | Admin |
+| **Historial** | Consulta de ventas con filtros, ver detalle, anular | Admin, Empleado (solo ver) |
+| **Cierre de Caja** | Resumen de ventas del día, totales por método de pago | Admin, Empleado |
+| **Usuarios** | CRUD de usuarios, gestión de roles (Admin/Empleado/Cocina) | Admin |
 
 ---
 

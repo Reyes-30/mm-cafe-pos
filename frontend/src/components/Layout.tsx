@@ -301,7 +301,7 @@ export default function Layout() {
                       {user?.name}
                     </p>
                     <p className="text-[10px] text-cafe-400 dark:text-cream-400">
-                      {user?.role === 'ADMIN' ? 'Administrador' : 'Cajero'}
+                      {user?.role === 'ADMIN' ? 'Administrador' : user?.role === 'COCINA' ? 'Cocina' : 'Empleado'}
                     </p>
                   </div>
                   <ChevronDown size={16} className="text-cafe-400 hidden sm:block" />

@@ -163,7 +163,7 @@ export default function HistorialPage() {
           {user?.role === 'ADMIN' && (
             <div>
               <label className="text-xs font-medium text-cafe-600 dark:text-cream-300 mb-1 block">
-                Cajero
+                Usuario
               </label>
               <select
                 value={filterUserId}
@@ -219,7 +219,7 @@ export default function HistorialPage() {
                   <tr className="bg-cream-200 dark:bg-gray-700">
                     <th className="text-left p-2 sm:p-3 text-[10px] sm:text-xs font-semibold text-cafe-600"># Orden</th>
                     <th className="text-left p-2 sm:p-3 text-[10px] sm:text-xs font-semibold text-cafe-600">Fecha</th>
-                    <th className="text-left p-2 sm:p-3 text-[10px] sm:text-xs font-semibold text-cafe-600 hidden md:table-cell">Cajero</th>
+                    <th className="text-left p-2 sm:p-3 text-[10px] sm:text-xs font-semibold text-cafe-600 hidden md:table-cell">Usuario</th>
                     <th className="text-center p-2 sm:p-3 text-[10px] sm:text-xs font-semibold text-cafe-600">Pago</th>
                     <th className="text-center p-2 sm:p-3 text-[10px] sm:text-xs font-semibold text-cafe-600">Estado</th>
                     <th className="text-right p-2 sm:p-3 text-[10px] sm:text-xs font-semibold text-cafe-600">Total</th>
@@ -305,7 +305,7 @@ export default function HistorialPage() {
                     </div>
                     {order.user?.name && (
                       <div>
-                        <span className="text-cafe-400">Cajero: </span>
+                        <span className="text-cafe-400">Usuario: </span>
                         <span className="text-cafe-600 dark:text-cream-300">{order.user.name}</span>
                       </div>
                     )}
@@ -408,7 +408,7 @@ export default function HistorialPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-cafe-400">Cajero:</span>
+                  <span className="text-cafe-400">Usuario:</span>
                   <span className="text-cafe-700 dark:text-white">{selectedOrder.user?.name}</span>
                 </div>
                 <div className="flex justify-between text-sm">

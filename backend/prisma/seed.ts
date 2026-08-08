@@ -20,21 +20,39 @@ async function main() {
     },
   });
 
-  // Create cajero user
-  const cajeroPassword = await bcrypt.hash('cajero123', 12);
-  const cajero = await prisma.user.upsert({
-    where: { email: 'cajero@mmcafe.com' },
+  // Create empleado user
+  const empleadoPassword = await bcrypt.hash('empleado123', 12);
+  const empleado = await prisma.user.upsert({
+    where: { email: 'empleado@mmcafe.com' },
     update: {},
     create: {
-      name: 'Cajero Principal',
-      email: 'cajero@mmcafe.com',
-      password: cajeroPassword,
-      role: 'CAJERO',
+      name: 'Empleado Principal',
+      email: 'empleado@mmcafe.com',
+      password: empleadoPassword,
+      role: 'EMPLEADO',
       isActive: true,
     },
   });
 
-  console.log('✅ Users created:', { admin: admin.email, cajero: cajero.email });
+  // Create cocina user
+  const cocinaPassword = await bcrypt.hash('cocina123', 12);
+  const cocina = await prisma.user.upsert({
+    where: { email: 'cocina@mmcafe.com' },
+    update: {},
+    create: {
+      name: 'Personal de Cocina',
+      email: 'cocina@mmcafe.com',
+      password: cocinaPassword,
+      role: 'COCINA',
+      isActive: true,
+    },
+  });
+
+  console.log('✅ Users created:', { 
+    admin: admin.email, 
+    empleado: empleado.email,
+    cocina: cocina.email 
+  });
 
   // Create categories
   const categoryNames = [
@@ -126,7 +144,8 @@ async function main() {
   console.log('');
   console.log('📋 Default credentials:');
   console.log('   Admin: admin@mmcafe.com / admin123');
-  console.log('   Cajero: cajero@mmcafe.com / cajero123');
+  console.log('   Empleado: empleado@mmcafe.com / empleado123');
+  console.log('   Cocina: cocina@mmcafe.com / cocina123');
 }
 
 main()

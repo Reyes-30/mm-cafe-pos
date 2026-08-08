@@ -159,7 +159,7 @@ export default function ReportesPage() {
 
     // Orders sheet
     const ordersData = [
-      ['# Orden', 'Fecha', 'Cajero', 'Items', 'Método de Pago', 'Total', 'Estado'],
+      ['# Orden', 'Fecha', 'Usuario', 'Items', 'Método de Pago', 'Total', 'Estado'],
       ...reportData.orders.map((o) => [
         o.orderNumber,
         formatDateTime(o.createdAt),
@@ -348,7 +348,7 @@ export default function ReportesPage() {
                     <tr className="bg-cream-200 dark:bg-gray-700">
                       <th className="text-left p-3 text-xs font-semibold text-cafe-600"># Orden</th>
                       <th className="text-left p-3 text-xs font-semibold text-cafe-600">Fecha</th>
-                      <th className="text-left p-3 text-xs font-semibold text-cafe-600 hidden md:table-cell">Cajero</th>
+                      <th className="text-left p-3 text-xs font-semibold text-cafe-600 hidden md:table-cell">Usuario</th>
                       <th className="text-center p-3 text-xs font-semibold text-cafe-600">Pago</th>
                       <th className="text-right p-3 text-xs font-semibold text-cafe-600">Total</th>
                     </tr>
