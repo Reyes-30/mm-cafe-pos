@@ -1,42 +1,103 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChefHat,
   Clock,
   Check,
   RefreshCw,
-  UtensilsCrossed,
   User,
   MessageSquare,
   Package,
   Store,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import api from '../lib/api';
 import { formatLempiras } from '../lib/utils';
+import {
+  unlockKitchenAudio,
+  isKitchenAudioReady,
+  playNewOrderAlert,
+  playTestBeep,
+} from '../lib/kitchenAlert';
 import type { Order } from '../types';
 import toast from 'react-hot-toast';
+
+const SOUND_PREF_KEY = 'kitchen-sound-enabled';
 
 export default function CocinaPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<number | null>(null);
+  const [soundEnabled, setSoundEnabled] = useState(
+    () => localStorage.getItem(SOUND_PREF_KEY) !== 'false'
+  );
+  const [audioReady, setAudioReady] = useState(false);
+
+  const knownOrderIdsRef = useRef<Set<number>>(new Set());
+  const isInitialLoadRef = useRef(true);
+
+  const enableAudio = useCallback(() => {
+    if (unlockKitchenAudio()) {
+      setAudioReady(true);
+    }
+  }, []);
 
   const loadOrders = useCallback(async () => {
     try {
       const res = await api.get('/orders/pending');
-      setOrders(res.data);
+      const incoming: Order[] = res.data;
+
+      if (!isInitialLoadRef.current && soundEnabled && audioReady) {
+        const newOrders = incoming.filter(
+          (o) => o.status === 'PENDIENTE' && !knownOrderIdsRef.current.has(o.id)
+        );
+        if (newOrders.length > 0) {
+          playNewOrderAlert();
+          const label =
+            newOrders.length === 1
+              ? `Pedido #${newOrders[0].orderNumber.split('-').pop()}`
+              : `${newOrders.length} pedidos nuevos`;
+          toast.success(`¡${label}!`, { icon: '🔔', duration: 4000 });
+        }
+      }
+
+      knownOrderIdsRef.current = new Set(incoming.map((o) => o.id));
+      isInitialLoadRef.current = false;
+      setOrders(incoming);
     } catch (error) {
       toast.error('Error al cargar pedidos');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [soundEnabled, audioReady]);
 
   useEffect(() => {
     loadOrders();
     const interval = setInterval(loadOrders, 5000);
     return () => clearInterval(interval);
   }, [loadOrders]);
+
+  useEffect(() => {
+    enableAudio();
+    const onInteraction = () => enableAudio();
+    document.addEventListener('click', onInteraction);
+    document.addEventListener('keydown', onInteraction);
+    return () => {
+      document.removeEventListener('click', onInteraction);
+      document.removeEventListener('keydown', onInteraction);
+    };
+  }, [enableAudio]);
+
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    localStorage.setItem(SOUND_PREF_KEY, next ? 'true' : 'false');
+    if (next) {
+      enableAudio();
+      if (isKitchenAudioReady()) playTestBeep();
+    }
+  };
 
   const handleStartPreparing = async (orderId: number) => {
     setProcessing(orderId);
@@ -139,15 +200,36 @@ export default function CocinaPage() {
             {orders.length} pedido{orders.length !== 1 ? 's' : ''} activo{orders.length !== 1 ? 's' : ''}
           </p>
         </div>
-        <button
-          onClick={() => loadOrders()}
-          disabled={loading}
-          className="btn-outline flex items-center gap-2"
-        >
-          <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-          Actualizar
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleSound}
+            className={`btn-outline flex items-center gap-2 ${
+              soundEnabled ? 'border-cafe-700 text-cafe-700 dark:text-cream-200' : 'opacity-60'
+            }`}
+            title={soundEnabled ? 'Alertas de sonido activadas' : 'Alertas de sonido desactivadas'}
+          >
+            {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+            <span className="hidden sm:inline">{soundEnabled ? 'Sonido ON' : 'Sonido OFF'}</span>
+          </button>
+          <button
+            onClick={() => loadOrders()}
+            disabled={loading}
+            className="btn-outline flex items-center gap-2"
+          >
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            <span className="hidden sm:inline">Actualizar</span>
+          </button>
+        </div>
       </div>
+
+      {!audioReady && soundEnabled && (
+        <button
+          onClick={enableAudio}
+          className="w-full mb-4 py-3 px-4 rounded-xl bg-gold-100 dark:bg-gold-900/30 border border-gold-300 dark:border-gold-700 text-gold-800 dark:text-gold-300 text-sm font-medium text-center hover:bg-gold-200 dark:hover:bg-gold-900/50 transition-colors"
+        >
+          🔔 Toca aquí para activar las alertas de sonido
+        </button>
+      )}
 
       {/* Orders Grid */}
       {orders.length === 0 ? (
