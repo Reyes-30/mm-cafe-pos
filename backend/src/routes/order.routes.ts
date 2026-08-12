@@ -7,7 +7,8 @@ import {
   completeOrder, 
   getPendingOrders,
   startPreparingOrder,
-  markOrderReady
+  markOrderReady,
+  markOrderDelivered
 } from '../controllers/order.controller';
 import { authenticate, authorize } from '../middleware/auth';
 
@@ -20,6 +21,7 @@ router.get('/pending', getPendingOrders);
 router.get('/', getOrders);
 router.get('/:id', getOrderById);
 router.patch('/:id/complete', completeOrder);
+router.patch('/:id/deliver', markOrderDelivered);
 router.patch('/:id/start-preparing', startPreparingOrder);
 router.patch('/:id/mark-ready', markOrderReady);
 router.patch('/:id/void', authorize('ADMIN'), voidOrder);

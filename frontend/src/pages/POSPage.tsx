@@ -28,6 +28,8 @@ interface PendingOrder {
   orderNumber: string;
   total: number;
   note: string | null;
+  status: 'PENDIENTE' | 'EN_PREPARACION' | 'LISTA';
+  paidAt: string | null;
   createdAt: string;
   user: { name: string };
   items: {
@@ -59,6 +61,7 @@ export default function POSPage() {
   // Payment modal for completing pending orders
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPendingOrder, setSelectedPendingOrder] = useState<PendingOrder | null>(null);
+  const [deliverAfterPayment, setDeliverAfterPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'EFECTIVO' | 'TARJETA'>('EFECTIVO');
   const [cashReceived, setCashReceived] = useState('');
 
@@ -172,11 +175,25 @@ export default function POSPage() {
     }
   };
 
-  const openPaymentModal = (order: PendingOrder) => {
+  const openPaymentModal = (order: PendingOrder, deliver = false) => {
     setSelectedPendingOrder(order);
+    setDeliverAfterPayment(deliver);
     setPaymentMethod('EFECTIVO');
     setCashReceived('');
     setShowPaymentModal(true);
+  };
+
+  const handleDeliverOrder = async (orderId: number) => {
+    setProcessing(true);
+    try {
+      await api.patch(`/orders/${orderId}/deliver`);
+      toast.success('¡Pedido entregado!');
+      loadPendingOrders();
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Error al entregar el pedido');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   const handleCompleteOrder = async () => {
@@ -197,14 +214,23 @@ export default function POSPage() {
       }
 
       const response = await api.patch(`/orders/${selectedPendingOrder.id}/complete`, data);
-      setLastOrder(response.data);
+
+      if (deliverAfterPayment) {
+        const delivered = await api.patch(`/orders/${selectedPendingOrder.id}/deliver`);
+        setLastOrder(delivered.data);
+        toast.success('¡Pedido cobrado y entregado!');
+      } else {
+        setLastOrder(response.data);
+        toast.success('¡Cobrado! El pedido sigue en cocina');
+      }
+
       setShowPaymentModal(false);
       setSelectedPendingOrder(null);
+      setDeliverAfterPayment(false);
       setShowReceipt(true);
-      toast.success('¡Orden cobrada exitosamente!');
       loadPendingOrders();
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Error al completar la orden');
+      toast.error(error.response?.data?.error || 'Error al cobrar la orden');
     } finally {
       setProcessing(false);
     }
@@ -658,13 +684,42 @@ export default function POSPage() {
                     </p>
                   )}
 
-                  <button
-                    onClick={() => openPaymentModal(order)}
-                    className="w-full py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors min-h-[44px] cursor-pointer select-none"
-                  >
-                    <CreditCard size={16} />
-                    Cobrar Pedido
-                  </button>
+                  {order.paidAt && order.status !== 'LISTA' && (
+                    <div className="w-full py-2.5 rounded-xl bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 text-sm font-medium text-center mb-2 border border-blue-200 dark:border-blue-800">
+                      ✓ Pagado · En cocina
+                    </div>
+                  )}
+
+                  {order.paidAt && order.status === 'LISTA' && (
+                    <button
+                      onClick={() => handleDeliverOrder(order.id)}
+                      disabled={processing}
+                      className="w-full py-2.5 rounded-xl bg-cafe-700 hover:bg-cafe-800 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors min-h-[44px] cursor-pointer select-none"
+                    >
+                      <Check size={16} />
+                      Marcar entregado
+                    </button>
+                  )}
+
+                  {!order.paidAt && order.status === 'LISTA' && (
+                    <button
+                      onClick={() => openPaymentModal(order, true)}
+                      className="w-full py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors min-h-[44px] cursor-pointer select-none"
+                    >
+                      <CreditCard size={16} />
+                      Cobrar y entregar
+                    </button>
+                  )}
+
+                  {!order.paidAt && order.status !== 'LISTA' && (
+                    <button
+                      onClick={() => openPaymentModal(order, false)}
+                      className="w-full py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors min-h-[44px] cursor-pointer select-none"
+                    >
+                      <CreditCard size={16} />
+                      Cobrar (anticipo)
+                    </button>
+                  )}
                 </motion.div>
               ))
             )}
@@ -943,7 +998,7 @@ export default function POSPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-xl font-display font-bold text-cafe-700 dark:text-white">
-                    Cobrar Pedido
+                    {deliverAfterPayment ? 'Cobrar y entregar' : 'Cobrar pedido'}
                   </h2>
                   <p className="text-sm text-cafe-400">{selectedPendingOrder.orderNumber}</p>
                 </div>
@@ -1065,7 +1120,7 @@ export default function POSPage() {
                 ) : (
                   <>
                     <Check size={20} />
-                    Confirmar Cobro
+                    {deliverAfterPayment ? 'Confirmar cobro y entrega' : 'Confirmar cobro'}
                   </>
                 )}
               </button>

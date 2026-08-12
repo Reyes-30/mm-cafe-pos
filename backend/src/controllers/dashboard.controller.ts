@@ -12,21 +12,21 @@ export const getDashboardStats = async (_req: Request, res: Response) => {
     const weekStart = new Date(today);
     weekStart.setDate(weekStart.getDate() - weekStart.getDay() + (weekStart.getDay() === 0 ? -6 : 1));
 
-    // Today's sales
+    // Today's sales (cobradas)
     const todaySales = await prisma.order.aggregate({
       where: {
-        createdAt: { gte: today, lt: tomorrow },
-        status: 'COMPLETADA',
+        paidAt: { gte: today, lt: tomorrow },
+        status: { not: 'ANULADA' },
       },
       _sum: { total: true },
       _count: true,
     });
 
-    // Week's sales
+    // Week's sales (cobradas)
     const weekSales = await prisma.order.aggregate({
       where: {
-        createdAt: { gte: weekStart },
-        status: 'COMPLETADA',
+        paidAt: { gte: weekStart },
+        status: { not: 'ANULADA' },
       },
       _sum: { total: true },
       _count: true,
@@ -42,8 +42,8 @@ export const getDashboardStats = async (_req: Request, res: Response) => {
       by: ['productId'],
       where: {
         order: {
-          createdAt: { gte: weekStart },
-          status: 'COMPLETADA',
+          paidAt: { gte: weekStart },
+          status: { not: 'ANULADA' },
         },
       },
       _sum: { quantity: true },
@@ -90,8 +90,8 @@ export const getSalesChart = async (_req: Request, res: Response) => {
 
       const sales = await prisma.order.aggregate({
         where: {
-          createdAt: { gte: date, lt: nextDate },
-          status: 'COMPLETADA',
+          paidAt: { gte: date, lt: nextDate },
+          status: { not: 'ANULADA' },
         },
         _sum: { total: true },
         _count: true,
@@ -121,8 +121,8 @@ export const getCategorySales = async (_req: Request, res: Response) => {
       by: ['productId'],
       where: {
         order: {
-          createdAt: { gte: weekStart },
-          status: 'COMPLETADA',
+          paidAt: { gte: weekStart },
+          status: { not: 'ANULADA' },
         },
       },
       _sum: { subtotal: true, quantity: true },
@@ -185,8 +185,8 @@ export const getReportByDateRange = async (req: Request, res: Response) => {
 
     const orders = await prisma.order.findMany({
       where: {
-        createdAt: { gte: start, lte: end },
-        status: 'COMPLETADA',
+        paidAt: { gte: start, lte: end },
+        status: { not: 'ANULADA' },
       },
       include: {
         items: {

@@ -53,7 +53,7 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
     let change = null;
 
     if (paymentMethod) {
-      // Immediate completion with payment
+      // Immediate completion with payment (venta directa sin cocina)
       if (paymentMethod === 'EFECTIVO') {
         if (!cashReceived || cashReceived < total) {
           return res.status(400).json({
@@ -64,6 +64,8 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       }
       status = 'COMPLETADA';
     }
+
+    const now = paymentMethod ? new Date() : null;
 
     // Create unique order number
     let orderNumber = generateOrderNumber();
@@ -83,6 +85,7 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
         note: note || null,
         serviceType: serviceType as any || null,
         status: status as any,
+        paidAt: now,
         userId: req.user!.id,
         items: { create: orderItems },
       },
@@ -116,8 +119,12 @@ export const completeOrder = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ error: 'Orden no encontrada' });
     }
 
-    if (!['PENDIENTE', 'LISTA'].includes(order.status)) {
-      return res.status(400).json({ error: 'Solo se pueden completar órdenes pendientes o listas' });
+    if (!['PENDIENTE', 'EN_PREPARACION', 'LISTA'].includes(order.status)) {
+      return res.status(400).json({ error: 'Esta orden no se puede cobrar' });
+    }
+
+    if (order.paidAt) {
+      return res.status(400).json({ error: 'Esta orden ya fue cobrada' });
     }
 
     const { paymentMethod, cashReceived } = parsed.data;
@@ -135,10 +142,10 @@ export const completeOrder = async (req: AuthRequest, res: Response) => {
     const updated = await prisma.order.update({
       where: { id: order.id },
       data: {
-        status: 'COMPLETADA',
         paymentMethod: paymentMethod as any,
         cashReceived: cashReceived || null,
         change,
+        paidAt: new Date(),
       },
       include: {
         items: { include: { product: { select: { name: true } } } },
@@ -148,7 +155,40 @@ export const completeOrder = async (req: AuthRequest, res: Response) => {
 
     return res.json(updated);
   } catch (error) {
-    return res.status(500).json({ error: 'Error al completar la orden' });
+    return res.status(500).json({ error: 'Error al cobrar la orden' });
+  }
+};
+
+export const markOrderDelivered = async (req: AuthRequest, res: Response) => {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: parseInt(req.params.id as string) },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: 'Orden no encontrada' });
+    }
+
+    if (order.status !== 'LISTA') {
+      return res.status(400).json({ error: 'Solo se pueden entregar órdenes marcadas como listas' });
+    }
+
+    if (!order.paidAt) {
+      return res.status(400).json({ error: 'Debe cobrar la orden antes de marcarla como entregada' });
+    }
+
+    const updated = await prisma.order.update({
+      where: { id: order.id },
+      data: { status: 'COMPLETADA' },
+      include: {
+        items: { include: { product: { select: { name: true } } } },
+        user: { select: { name: true } },
+      },
+    });
+
+    return res.json(updated);
+  } catch (error) {
+    return res.status(500).json({ error: 'Error al marcar la orden como entregada' });
   }
 };
 

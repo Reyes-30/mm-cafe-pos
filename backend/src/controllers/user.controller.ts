@@ -55,7 +55,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
     // Calculate total processed
     const totalProcessed = await prisma.order.aggregate({
-      where: { userId: user.id, status: 'COMPLETADA' },
+      where: { userId: user.id, paidAt: { not: null } },
       _sum: { total: true },
     });
 

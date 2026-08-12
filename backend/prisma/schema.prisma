@@ -81,6 +81,7 @@ model Order {
   note          String?
   serviceType   ServiceType?
   status        OrderStatus   @default(PENDIENTE)
+  paidAt        DateTime?
   voidReason    String?
   userId        Int
   createdAt     DateTime      @default(now())

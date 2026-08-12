@@ -1,4 +1,8 @@
+import dotenv from 'dotenv';
+import path from 'path';
 import { PrismaClient } from '@prisma/client';
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const prisma = new PrismaClient();
 
@@ -14,6 +18,12 @@ async function main() {
     console.log('   npm run clean-db -- --confirm');
     console.log('');
     process.exit(0);
+  }
+
+  if (!process.env.DATABASE_URL) {
+    console.error('❌ No se encontró DATABASE_URL.');
+    console.error('   Verifica que backend/.env exista y tenga la URL de Render.');
+    process.exit(1);
   }
 
   console.log('');

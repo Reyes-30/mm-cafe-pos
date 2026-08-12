@@ -50,6 +50,7 @@ export interface Order {
   note: string | null;
   serviceType: 'PARA_LLEVAR' | 'COMER_AQUI' | null;
   status: 'PENDIENTE' | 'EN_PREPARACION' | 'LISTA' | 'COMPLETADA' | 'ANULADA';
+  paidAt: string | null;
   voidReason: string | null;
   userId: number;
   createdAt: string;

@@ -181,6 +181,11 @@ export default function CocinaPage() {
                         #{order.orderNumber.split('-').pop()}
                       </h3>
                       {getStatusBadge(order.status)}
+                      {order.paidAt && (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                          💰 Pagado
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center gap-3 text-xs text-cafe-500 dark:text-cream-400">
                       <div className="flex items-center gap-1">
@@ -288,7 +293,7 @@ export default function CocinaPage() {
                   )}
                   {order.status === 'LISTA' && (
                     <div className="flex-1 text-center py-3 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl font-medium border border-green-200 dark:border-green-800">
-                      ✅ Esperando cobro
+                      {order.paidAt ? '✅ Pagado · Esperando entrega' : '✅ Lista · Esperando cobro'}
                     </div>
                   )}
                 </div>
