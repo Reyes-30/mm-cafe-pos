@@ -19,7 +19,11 @@ export default function LoginPage() {
       toast.success('¡Bienvenido a M&M Café!');
       // Get user from store after login
       const user = useAuthStore.getState().user;
-      navigate(user?.role === 'ADMIN' ? '/dashboard' : '/pos', { replace: true });
+      const defaultRoute =
+        user?.role === 'ADMIN' ? '/dashboard' :
+        user?.role === 'COCINA' ? '/cocina' :
+        '/pos';
+      navigate(defaultRoute, { replace: true });
     } catch (error: any) {
       toast.error(error.message || 'Error al iniciar sesión');
     }

@@ -63,7 +63,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/pos" element={<POSPage />} />
+          <Route
+            path="/pos"
+            element={
+              <ProtectedRoute roles={['ADMIN', 'EMPLEADO']}>
+                <POSPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/cocina"
             element={
