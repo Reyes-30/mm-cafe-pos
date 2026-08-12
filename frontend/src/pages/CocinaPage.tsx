@@ -188,7 +188,7 @@ export default function CocinaPage() {
   }
 
   return (
-    <div className="p-3 sm:p-4 md:p-6">
+    <div className="p-3 sm:p-4 md:p-6 pb-28 md:pb-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
